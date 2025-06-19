@@ -10,6 +10,7 @@ import RecurrenceManager from '../components/Recurrences/RecurrenceManager'
 import SettingsManager from '../components/Settings/SettingsManager'
 import ExportManager from '../components/Export/ExportManager'
 import Tutorial from '../components/Tutorial/Tutorial'
+import Footer from '../components/Footer'
 import useTransactionStore from '../lib/store/transactionStore'
 import useCategoryStore from '../lib/store/categoryStore'
 import useRecurrenceStore from '../lib/store/recurrenceStore'
@@ -49,23 +50,31 @@ export default function Home() {
         <title>{activeBudget.name} - Mon Argent</title>
       </Head>
       
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
-        {/* Header avec sélecteur de budgets */}
-        <div className="text-center mb-8">
-          <div className="flex flex-col items-center gap-4">
-            <div>
-              <h1 className="text-4xl font-bold text-gray-800 mb-2">💰 Mon Argent</h1>
-              <p className="text-gray-600">Gérez votre budget simplement</p>
+      <div className="min-h-screen flex flex-col">
+        {/* Contenu principal */}
+        <main className="flex-1">
+          <div className="container mx-auto px-4 py-8 max-w-6xl">
+            {/* Header avec sélecteur de budgets */}
+            <div className="text-center mb-8">
+              <div className="flex flex-col items-center gap-4">
+                <div>
+                  <h1 className="text-4xl font-bold text-gray-800 mb-2">💰 Mon Argent</h1>
+                  <p className="text-gray-600">Gérez votre budget simplement</p>
+                </div>
+                <BudgetSelector />
+              </div>
             </div>
-            <BudgetSelector />
+
+            {/* Navigation */}
+            <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
+
+            {/* Contenu dynamique */}
+            {renderContent()}
           </div>
-        </div>
+        </main>
 
-        {/* Navigation */}
-        <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
-
-        {/* Contenu dynamique */}
-        {renderContent()}
+        {/* Footer */}
+        <Footer />
       </div>
     </>
   )
