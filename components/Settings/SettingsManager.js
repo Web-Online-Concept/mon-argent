@@ -46,8 +46,8 @@ export default function SettingsManager() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <div className="bg-white rounded-lg p-8 shadow-lg">
-        <h2 className="text-2xl font-bold mb-6">⚙️ Paramètres</h2>
+      <div className="bg-white rounded-lg p-4 sm:p-8 shadow-lg">
+        <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">⚙️ Paramètres</h2>
         
         <div className="space-y-6">
           {/* Solde initial */}
@@ -55,18 +55,20 @@ export default function SettingsManager() {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               💰 Solde initial (€)
             </label>
-            <div className="flex gap-4">
+            
+            {/* Input et bouton - Responsive */}
+            <div className="space-y-2 sm:space-y-0 sm:flex sm:gap-4">
               <input 
                 type="number" 
                 step="0.01"
                 value={balance}
                 onChange={handleBalanceChange}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
               <button 
                 onClick={handleSave}
                 disabled={!hasChanges}
-                className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+                className={`w-full sm:w-auto px-4 sm:px-6 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${
                   hasChanges 
                     ? 'bg-green-500 hover:bg-green-600 text-white' 
                     : 'bg-gray-300 text-gray-500 cursor-not-allowed'
@@ -75,6 +77,7 @@ export default function SettingsManager() {
                 💾 Sauvegarder
               </button>
             </div>
+            
             <p className="text-sm text-gray-500 mt-2">
               Ce montant sera votre point de départ pour calculer votre solde actuel
             </p>
@@ -97,7 +100,7 @@ export default function SettingsManager() {
               <div>
                 <button 
                   onClick={handleReset}
-                  className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-medium"
+                  className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-4 sm:px-6 py-2 rounded-lg font-medium"
                 >
                   🗑️ Effacer les transactions
                 </button>
@@ -109,7 +112,7 @@ export default function SettingsManager() {
               <div>
                 <button 
                   onClick={handleFullReset}
-                  className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg font-medium"
+                  className="w-full sm:w-auto bg-red-500 hover:bg-red-600 text-white px-4 sm:px-6 py-2 rounded-lg font-medium"
                 >
                   💣 Réinitialisation complète
                 </button>

@@ -55,24 +55,26 @@ export default function CategoryManager() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-lg p-6 shadow-lg">
-        <h2 className="text-2xl font-bold mb-4">🏷️ Gestion des catégories</h2>
+      <div className="bg-white rounded-lg p-4 sm:p-6 shadow-lg">
+        <h2 className="text-xl sm:text-2xl font-bold mb-4">🏷️ Gestion des catégories</h2>
         
         {/* Ajouter catégorie */}
         <div className="mb-6">
           <h3 className="text-lg font-semibold mb-3">➕ Ajouter une catégorie</h3>
-          <div className="flex gap-4">
+          
+          {/* Input - Responsive */}
+          <div className="space-y-2 sm:space-y-0 sm:flex sm:gap-4">
             <input 
               type="text" 
               value={newCategory}
               onChange={(e) => setNewCategory(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleAddCategory()}
               placeholder="Nom de la nouvelle catégorie" 
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             />
             <button 
               onClick={handleAddCategory}
-              className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg"
+              className="w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white px-4 sm:px-6 py-2 rounded-lg whitespace-nowrap"
             >
               Ajouter
             </button>
@@ -93,10 +95,10 @@ export default function CategoryManager() {
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-medium text-gray-800">{category}</h4>
+                    <h4 className="font-medium text-gray-800 truncate mr-2">{category}</h4>
                     <button 
                       onClick={() => handleDeleteCategory(category)}
-                      className={`text-sm hover:scale-110 transition-transform ${
+                      className={`text-sm hover:scale-110 transition-transform flex-shrink-0 ${
                         stats.isUsed ? 'text-orange-600 hover:text-red-600' : 'text-red-500 hover:text-red-700'
                       }`}
                       title={stats.isUsed ? 'Supprimer (avec transfert)' : 'Supprimer'}
@@ -124,8 +126,8 @@ export default function CategoryManager() {
       </div>
 
       {/* Stats globales */}
-      <div className="bg-white rounded-lg p-6 shadow-lg">
-        <h3 className="text-xl font-semibold mb-4">📊 Statistiques des catégories</h3>
+      <div className="bg-white rounded-lg p-4 sm:p-6 shadow-lg">
+        <h3 className="text-lg sm:text-xl font-semibold mb-4">📊 Statistiques des catégories</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="text-center p-4 bg-blue-50 rounded-lg">
             <p className="text-2xl font-bold text-blue-600">{categories.length}</p>
