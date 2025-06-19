@@ -39,24 +39,27 @@ export default function TransactionForm() {
       <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-center">✏️ Saisie manuelle</h2>
       
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Type et Montant - Responsive */}
-        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+        {/* Type - Ligne séparée sur mobile */}
+        <div className="w-full">
           <select 
             value={type}
             onChange={(e) => setType(e.target.value)}
-            className="w-full sm:w-auto sm:min-w-[140px] px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
           >
             <option value="debit">💸 Dépense</option>
             <option value="credit">💰 Revenus</option>
           </select>
-          
+        </div>
+        
+        {/* Montant - Ligne séparée */}
+        <div className="w-full">
           <input 
             type="number" 
             step="0.01"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             placeholder="Montant (€)" 
-            className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" 
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm" 
             required
           />
         </div>
