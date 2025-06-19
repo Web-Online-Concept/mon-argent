@@ -35,15 +35,16 @@ export default function TransactionForm() {
   }
 
   return (
-    <div className="bg-white rounded-lg p-8 shadow-lg">
-      <h2 className="text-2xl font-bold mb-6 text-center">✏️ Saisie manuelle</h2>
+    <div className="bg-white rounded-lg p-4 sm:p-8 shadow-lg">
+      <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-center">✏️ Saisie manuelle</h2>
       
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex gap-4">
+        {/* Type et Montant - Responsive */}
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
           <select 
             value={type}
             onChange={(e) => setType(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="w-full sm:w-auto sm:min-w-[140px] px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
           >
             <option value="debit">💸 Dépense</option>
             <option value="credit">💰 Revenus</option>
@@ -55,15 +56,16 @@ export default function TransactionForm() {
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             placeholder="Montant (€)" 
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" 
+            className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" 
             required
           />
         </div>
         
+        {/* Catégorie */}
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
         >
           <option value="">Choisir une catégorie...</option>
           {categories.map((cat) => (
@@ -71,18 +73,20 @@ export default function TransactionForm() {
           ))}
         </select>
         
+        {/* Description */}
         <input 
           type="text" 
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Description" 
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" 
+          className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" 
           required
         />
         
+        {/* Bouton Submit */}
         <button 
           type="submit" 
-          className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-6 rounded-lg transition-colors"
+          className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 sm:px-6 rounded-lg transition-colors"
         >
           ➕ Ajouter la transaction
         </button>
