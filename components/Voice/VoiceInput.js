@@ -136,70 +136,74 @@ export default function VoiceInput() {
 
   return (
     <div className="bg-white rounded-lg p-4 sm:p-6 shadow-lg h-full flex flex-col" data-voice-section>
-      <h2 className="text-xl sm:text-2xl font-bold mb-4 text-center">🎤 Commande vocale</h2>
+      <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-center">🎤 Commande vocale</h2>
       
-      <div className="text-center space-y-4 flex-1 flex flex-col">
-        {/* Bouton principal */}
-        <button
-          onClick={isListening ? stopListening : startListening}
-          className={`w-full py-4 px-6 rounded-lg font-semibold text-lg transition-all ${
-            isListening 
-              ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse' 
-              : 'bg-blue-500 hover:bg-blue-600 text-white'
-          }`}
-        >
-          {isListening ? '🔴 Arrêter l\'écoute' : '🎤 Commencer à parler'}
-        </button>
-        
-        {/* Instructions */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm">
-          <p className="font-medium text-blue-800 mb-2">💡 Exemples de phrases :</p>
-          <div className="text-blue-700 space-y-1 text-left">
-            <p>• "Dépense 15 euros restaurant"</p>
-            <p>• "Revenu 1200 euros salaire"</p>
-            <p>• "25 euros courses Carrefour"</p>
-            <p>• "Gagné 50 euros freelance"</p>
+      <div className="flex-1 flex flex-col">
+        <div className="space-y-4 flex-1">
+          {/* Instructions */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm">
+            <p className="font-medium text-blue-800 mb-2">💡 Exemples de phrases :</p>
+            <div className="text-blue-700 space-y-1 text-left">
+              <p>• "Dépense 15 euros restaurant"</p>
+              <p>• "Revenu 1200 euros salaire"</p>
+              <p>• "25 euros courses Carrefour"</p>
+              <p>• "Gagné 50 euros freelance"</p>
+            </div>
+          </div>
+
+          {/* Zone d'information supplémentaire pour égaliser */}
+          <div className="hidden lg:block bg-green-50 border border-green-200 rounded-lg p-3 text-sm">
+            <p className="font-medium text-green-800 mb-2">🎯 Comment ça marche :</p>
+            <div className="text-green-700 space-y-1 text-left">
+              <p>• <strong>Parlez clairement</strong> d'une voix normale</p>
+              <p>• <strong>Mentionnez le montant</strong> en euros</p>
+              <p>• <strong>Décrivez l'achat</strong> en quelques mots</p>
+              <p>• <strong>Ajoutez la catégorie</strong> si vous voulez</p>
+            </div>
+            <div className="mt-3 text-green-600 text-xs">
+              <p><strong>Astuce :</strong> Plus vous êtes précis, mieux l'IA comprendra votre transaction !</p>
+            </div>
+          </div>
+          
+          {/* Résultats */}
+          <div className="space-y-3">
+            {transcript && (
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                <p className="font-medium text-gray-700 mb-1">🎯 Texte détecté :</p>
+                <p className="text-gray-600 italic">"{transcript}"</p>
+              </div>
+            )}
+            
+            {processingResult && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                <p className="text-green-700">{processingResult}</p>
+              </div>
+            )}
+            
+            {/* Bouton de nettoyage */}
+            {(transcript || processingResult) && (
+              <button
+                onClick={clearResults}
+                className="text-gray-500 hover:text-gray-700 text-sm underline"
+              >
+                🧹 Effacer les résultats
+              </button>
+            )}
           </div>
         </div>
 
-        {/* Zone d'information supplémentaire pour égaliser */}
-        <div className="hidden lg:block bg-green-50 border border-green-200 rounded-lg p-3 text-sm flex-1">
-          <p className="font-medium text-green-800 mb-2">🎯 Comment ça marche :</p>
-          <div className="text-green-700 space-y-1 text-left">
-            <p>• <strong>Parlez clairement</strong> d'une voix normale</p>
-            <p>• <strong>Mentionnez le montant</strong> en euros</p>
-            <p>• <strong>Décrivez l'achat</strong> en quelques mots</p>
-            <p>• <strong>Ajoutez la catégorie</strong> si vous voulez</p>
-          </div>
-          <div className="mt-3 text-green-600 text-xs">
-            <p><strong>Astuce :</strong> Plus vous êtes précis, mieux l'IA comprendra votre transaction !</p>
-          </div>
-        </div>
-        
-        {/* Résultats */}
-        <div className="space-y-3">
-          {transcript && (
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
-              <p className="font-medium text-gray-700 mb-1">🎯 Texte détecté :</p>
-              <p className="text-gray-600 italic">"{transcript}"</p>
-            </div>
-          )}
-          
-          {processingResult && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-              <p className="text-green-700">{processingResult}</p>
-            </div>
-          )}
-          
-          {/* Bouton de nettoyage */}
-          {(transcript || processingResult) && (
-            <button
-              onClick={clearResults}
-              className="text-gray-500 hover:text-gray-700 text-sm underline"
-            >
-              🧹 Effacer les résultats
-            </button>
-          )}
+        {/* Bouton principal - Aligné avec le bouton de saisie manuelle */}
+        <div className="pt-4">
+          <button
+            onClick={isListening ? stopListening : startListening}
+            className={`w-full font-semibold py-4 px-6 rounded-lg transition-all text-lg ${
+              isListening 
+                ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse' 
+                : 'bg-blue-500 hover:bg-blue-600 text-white'
+            }`}
+          >
+            {isListening ? '🔴 Arrêter l\'écoute' : '🎤 Commencer à parler'}
+          </button>
         </div>
       </div>
     </div>
