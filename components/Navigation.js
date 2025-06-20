@@ -8,17 +8,6 @@ const Navigation = ({ activeTab, onTabChange }) => {
     { id: 'tutorial', icon: '📚', label: 'Tuto' },
   ]
 
-  // Filtrer le tutorial pour mobile (déjà dans le bottom menu)
-  const mobileMenuItems = menuItems.filter(item => item.id !== 'tutorial')const Navigation = ({ activeTab, onTabChange }) => {
-  const menuItems = [
-    { id: 'categories', icon: '🏷️', label: 'Catégories' },
-    { id: 'history', icon: '📋', label: 'Historique' },
-    { id: 'recurrences', icon: '🔄', label: 'Récurrences' },
-    { id: 'settings', icon: '⚙️', label: 'Paramètres' },
-    { id: 'export', icon: '📊', label: 'Export' },
-    { id: 'tutorial', icon: '📚', label: 'Tuto' },
-  ]
-
   return (
     <nav className="mb-6 sm:mb-8">
       {/* Menu desktop - Grille agrandie */}
@@ -43,7 +32,7 @@ const Navigation = ({ activeTab, onTabChange }) => {
         </div>
       </div>
 
-      {/* Menu mobile - 2 lignes de 3 boutons (TOUS les 6) */}
+      {/* Menu mobile - 2 lignes de 3 boutons */}
       <div className="sm:hidden mb-6">
         <div className="grid grid-cols-3 gap-2 mb-4">
           {/* Première ligne - 3 premiers éléments */}
