@@ -1,18 +1,15 @@
 const BottomMenu = ({ activeTab, onTabChange }) => {
   
-  const handleVocalClick = () => {
+  const handleAjoutClick = () => {
     // Aller à la page d'ajout
     onTabChange('add')
     
-    // Après un court délai, scroller vers la section vocale
+    // Après un court délai, scroller vers le bas de la page
     setTimeout(() => {
-      const voiceSection = document.querySelector('[data-voice-section]')
-      if (voiceSection) {
-        voiceSection.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'start' 
-        })
-      }
+      window.scrollTo({ 
+        top: document.body.scrollHeight, 
+        behavior: 'smooth' 
+      })
     }, 100)
   }
 
@@ -29,19 +26,31 @@ const BottomMenu = ({ activeTab, onTabChange }) => {
           }`}
         >
           <div className="flex flex-col items-center gap-1">
-            <span className="text-lg">🔵</span>
+            <span className="text-lg">👛</span>
             <span className="text-xs font-medium">MON SOLDE</span>
           </div>
         </button>
 
-        {/* + VOCAL */}
+        {/* + AJOUT */}
         <button
-          onClick={handleVocalClick}
-          className="flex-1 py-3 px-1 text-gray-600 hover:text-green-500 transition-colors"
+          onClick={handleAjoutClick}
+          className={`flex-1 py-3 px-1 transition-colors ${
+            activeTab === 'add'
+              ? 'bg-green-50 text-green-600'
+              : 'text-gray-600 hover:text-green-500'
+          }`}
         >
           <div className="flex flex-col items-center gap-1">
-            <span className="text-lg">🎤</span>
-            <span className="text-xs font-medium">+ VOCAL</span>
+            <span className="text-lg">💵</span>
+            <span className="text-xs font-medium">+ AJOUT</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  )
+}
+
+export default BottomMenu>
           </div>
         </button>
 
