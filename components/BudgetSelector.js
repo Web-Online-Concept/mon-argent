@@ -17,7 +17,6 @@ export default function BudgetSelector() {
   const createBudget = useBudgetStore(state => state.createBudget)
   const deleteBudget = useBudgetStore(state => state.deleteBudget)
   const renameBudget = useBudgetStore(state => state.renameBudget)
-  const getPrincipalTotal = useBudgetStore(state => state.getPrincipalTotal)
   const getIndividualBudgets = useBudgetStore(state => state.getIndividualBudgets)
 
   const budgetIcons = ['💰', '💼', '🏠', '✈️', '🎯', '💳', '🏦', '💸', '🎓', '🏥', '🚗', '👨‍👩‍👧‍👦']
@@ -68,37 +67,19 @@ export default function BudgetSelector() {
     }
   }
 
-  // Calculer les totaux pour l'affichage
+  // Calculer les totaux pour l'affichage (version simplifiée)
   const getBudgetDisplayInfo = (budget) => {
     if (budget.isPrincipal) {
-      const total = getPrincipalTotal()
       const individualBudgets = getIndividualBudgets()
       return {
-        balance: total,
+        balance: 0, // Calculé dynamiquement ailleurs
         subtitle: `${individualBudgets.length} budget(s) • Total agrégé`
       }
     } else {
-      // Pour les budgets individuels, calculer leur solde
-      const storageKey = `transactions_${budget.id}`
-      const storedData = localStorage.getItem(storageKey)
-      
-      if (storedData) {
-        try {
-          const data = JSON.parse(storedData)
-          const { transactions = [], initialBalance = 0 } = data.state || {}
-          const balance = initialBalance + transactions.reduce((acc, t) => {
-            return acc + (t.type === 'credit' ? t.amount : -t.amount)
-          }, 0)
-          return {
-            balance,
-            subtitle: `${transactions.length} transaction(s)`
-          }
-        } catch (error) {
-          return { balance: 0, subtitle: 'Erreur de lecture' }
-        }
+      return {
+        balance: 0, // Calculé dynamiquement ailleurs
+        subtitle: 'Budget individuel'
       }
-      
-      return { balance: 0, subtitle: 'Aucune transaction' }
     }
   }
 
@@ -125,7 +106,7 @@ export default function BudgetSelector() {
           <div className="flex-1 text-left">
             <div className="font-medium">{activeBudget.name}</div>
             <div className="text-sm text-gray-500">
-              {currentBudgetInfo.balance.toFixed(2)}€ • {currentBudgetInfo.subtitle}
+              {currentBudgetInfo.subtitle}
             </div>
           </div>
           <span className="text-gray-400">▼</span>
@@ -157,7 +138,7 @@ export default function BudgetSelector() {
                           {budget.isPrincipal && <span className="text-xs ml-2 px-2 py-1 bg-blue-100 text-blue-700 rounded">TOTAL</span>}
                         </div>
                         <div className="text-sm text-gray-500">
-                          {budgetInfo.balance.toFixed(2)}€ • {budgetInfo.subtitle}
+                          {budgetInfo.subtitle}
                         </div>
                       </div>
                     </button>
