@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import useTransactionStore from '../lib/store/transactionStore';
-import useCategoryStore from '../lib/store/categoryStore';
-import useBudgetStore from '../lib/store/budgetStore';
+import useTransactionStore from '../../lib/store/transactionStore';
+import useCategoryStore from '../../lib/store/categoryStore';
+import useBudgetStore from '../../lib/store/budgetStore';
 import Link from 'next/link';
 
 export default function Dashboard() {
