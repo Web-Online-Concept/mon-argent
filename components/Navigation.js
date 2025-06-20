@@ -9,7 +9,7 @@ const Navigation = ({ activeTab, onTabChange }) => {
   ]
 
   return (
-    <nav className="mb-8">
+    <nav className="mb-6 sm:mb-8">
       {/* Menu desktop - Grille agrandie */}
       <div className="hidden sm:block">
         <div className="grid grid-cols-3 lg:grid-cols-6 gap-3">
@@ -32,14 +32,15 @@ const Navigation = ({ activeTab, onTabChange }) => {
         </div>
       </div>
 
-      {/* Menu mobile - Scroll horizontal */}
+      {/* Menu mobile - 2 lignes de 3 boutons */}
       <div className="sm:hidden mb-20">
-        <div className="flex gap-3 overflow-x-auto pb-2 px-1">
-          {menuItems.map((item) => (
+        <div className="grid grid-cols-3 gap-2 mb-4">
+          {/* Première ligne - 3 premiers éléments */}
+          {menuItems.slice(0, 3).map((item) => (
             <button
               key={item.id}
               onClick={() => onTabChange(item.id)}
-              className={`flex-shrink-0 p-3 rounded-lg border-2 transition-all min-w-[80px] ${
+              className={`p-3 rounded-lg border-2 transition-all ${
                 activeTab === item.id
                   ? 'border-blue-500 bg-blue-50 text-blue-700'
                   : 'border-gray-200 bg-white hover:border-gray-300'
@@ -47,7 +48,27 @@ const Navigation = ({ activeTab, onTabChange }) => {
             >
               <div className="flex flex-col items-center gap-1">
                 <span className="text-lg">{item.icon}</span>
-                <span className="text-xs font-medium text-center">{item.label}</span>
+                <span className="text-xs font-medium text-center leading-tight">{item.label}</span>
+              </div>
+            </button>
+          ))}
+        </div>
+        
+        <div className="grid grid-cols-3 gap-2">
+          {/* Deuxième ligne - 3 derniers éléments */}
+          {menuItems.slice(3, 6).map((item) => (
+            <button
+              key={item.id}
+              onClick={() => onTabChange(item.id)}
+              className={`p-3 rounded-lg border-2 transition-all ${
+                activeTab === item.id
+                  ? 'border-blue-500 bg-blue-50 text-blue-700'
+                  : 'border-gray-200 bg-white hover:border-gray-300'
+              }`}
+            >
+              <div className="flex flex-col items-center gap-1">
+                <span className="text-lg">{item.icon}</span>
+                <span className="text-xs font-medium text-center leading-tight">{item.label}</span>
               </div>
             </button>
           ))}

@@ -2,7 +2,7 @@ const BottomMenu = ({ activeTab, onTabChange }) => {
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg sm:hidden z-50">
       <div className="flex">
-        {/* Tuto */}
+        {/* TUTO */}
         <button
           onClick={() => onTabChange('tutorial')}
           className={`flex-1 py-3 px-2 transition-colors ${
@@ -13,11 +13,11 @@ const BottomMenu = ({ activeTab, onTabChange }) => {
         >
           <div className="flex flex-col items-center gap-1">
             <span className="text-lg">📚</span>
-            <span className="text-xs font-medium">Tuto</span>
+            <span className="text-xs font-medium">TUTO</span>
           </div>
         </button>
 
-        {/* Mon Solde */}
+        {/* MON SOLDE */}
         <button
           onClick={() => onTabChange('dashboard')}
           className={`flex-1 py-3 px-2 transition-colors ${
@@ -28,7 +28,7 @@ const BottomMenu = ({ activeTab, onTabChange }) => {
         >
           <div className="flex flex-col items-center gap-1">
             <span className="text-lg">🔵</span>
-            <span className="text-xs font-medium">Mon Solde</span>
+            <span className="text-xs font-medium">MON SOLDE</span>
           </div>
         </button>
 
