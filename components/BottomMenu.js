@@ -64,27 +64,4 @@ const BottomMenu = ({ activeTab, onTabChange }) => {
   )
 }
 
-export default BottomMenu>
-          </div>
-        </button>
-
-        {/* + AJOUT */}
-        <button
-          onClick={() => onTabChange('add')}
-          className={`flex-1 py-3 px-1 transition-colors ${
-            activeTab === 'add'
-              ? 'bg-green-50 text-green-600'
-              : 'text-gray-600 hover:text-green-500'
-          }`}
-        >
-          <div className="flex flex-col items-center gap-1">
-            <span className="text-lg">💵</span>
-            <span className="text-xs font-medium">+ AJOUT</span>
-          </div>
-        </button>
-      </div>
-    </div>
-  )
-}
-
 export default BottomMenu
