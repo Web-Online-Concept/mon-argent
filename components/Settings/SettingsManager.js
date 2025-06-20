@@ -45,80 +45,86 @@ export default function SettingsManager() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="bg-white rounded-lg p-4 sm:p-8 shadow-lg">
-        <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">⚙️ Paramètres</h2>
-        
-        <div className="space-y-6">
-          {/* Solde initial */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              💰 Solde initial (€)
-            </label>
-            
-            {/* Input et bouton - Responsive */}
-            <div className="space-y-2 sm:space-y-0 sm:flex sm:gap-4">
-              <input 
-                type="number" 
-                step="0.01"
-                value={balance}
-                onChange={handleBalanceChange}
-                className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-              <button 
-                onClick={handleSave}
-                disabled={!hasChanges}
-                className={`w-full sm:w-auto px-4 sm:px-6 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${
-                  hasChanges 
-                    ? 'bg-green-500 hover:bg-green-600 text-white' 
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                }`}
-              >
-                💾 Sauvegarder
-              </button>
-            </div>
-            
-            <p className="text-sm text-gray-500 mt-2">
-              Ce montant sera votre point de départ pour calculer votre solde actuel
-            </p>
-          </div>
-
-          {/* Informations */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h3 className="font-semibold text-blue-800 mb-2">📊 Informations</h3>
-            <div className="text-sm text-blue-700 space-y-1">
-              <p>• Version : 2.0.0</p>
-              <p>• Stockage : Local (sur votre appareil)</p>
-              <p>• Données : 100% privées et sécurisées</p>
-            </div>
-          </div>
-
-          {/* Zone de danger */}
-          <div className="border-t pt-6">
-            <h3 className="text-lg font-semibold mb-4 text-red-600">⚠️ Zone de danger</h3>
-            <div className="space-y-4">
-              <div>
-                <button 
-                  onClick={handleReset}
-                  className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-4 sm:px-6 py-2 rounded-lg font-medium"
-                >
-                  🗑️ Effacer les transactions
-                </button>
-                <p className="text-sm text-gray-500 mt-1">
-                  Supprime toutes les transactions mais garde les catégories et récurrences
-                </p>
+    <div className="w-full max-w-full overflow-x-hidden">
+      <div className="max-w-2xl mx-auto">
+        <div className="bg-white rounded-lg p-3 shadow-lg">
+          <h2 className="text-xl font-bold mb-4">⚙️ Paramètres</h2>
+          
+          <div className="space-y-6">
+            {/* Solde initial - ULTRA SIMPLE */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                💰 Solde initial (€)
+              </label>
+              
+              {/* Input sur une ligne */}
+              <div className="w-full mb-2">
+                <input 
+                  type="number" 
+                  step="0.01"
+                  value={balance}
+                  onChange={handleBalanceChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                />
               </div>
               
-              <div>
+              {/* Bouton sur une ligne séparée */}
+              <div className="w-full">
                 <button 
-                  onClick={handleFullReset}
-                  className="w-full sm:w-auto bg-red-500 hover:bg-red-600 text-white px-4 sm:px-6 py-2 rounded-lg font-medium"
+                  onClick={handleSave}
+                  disabled={!hasChanges}
+                  className={`w-full px-4 py-2 rounded-lg font-medium transition-colors ${
+                    hasChanges 
+                      ? 'bg-green-500 hover:bg-green-600 text-white' 
+                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  }`}
                 >
-                  💣 Réinitialisation complète
+                  💾 Sauvegarder
                 </button>
-                <p className="text-sm text-gray-500 mt-1">
-                  Remet l'application à zéro (TOUT sera supprimé)
-                </p>
+              </div>
+              
+              <p className="text-sm text-gray-500 mt-2">
+                Ce montant sera votre point de départ pour calculer votre solde actuel
+              </p>
+            </div>
+
+            {/* Informations */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h3 className="font-semibold text-blue-800 mb-2">📊 Informations</h3>
+              <div className="text-sm text-blue-700 space-y-1">
+                <p>• Version : 2.0.0</p>
+                <p>• Stockage : Local (sur votre appareil)</p>
+                <p>• Données : 100% privées et sécurisées</p>
+              </div>
+            </div>
+
+            {/* Zone de danger */}
+            <div className="border-t pt-6">
+              <h3 className="text-lg font-semibold mb-4 text-red-600">⚠️ Zone de danger</h3>
+              <div className="space-y-4">
+                <div>
+                  <button 
+                    onClick={handleReset}
+                    className="w-full bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium"
+                  >
+                    🗑️ Effacer les transactions
+                  </button>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Supprime toutes les transactions mais garde les catégories et récurrences
+                  </p>
+                </div>
+                
+                <div>
+                  <button 
+                    onClick={handleFullReset}
+                    className="w-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium"
+                  >
+                    💣 Réinitialisation complète
+                  </button>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Remet l'application à zéro (TOUT sera supprimé)
+                  </p>
+                </div>
               </div>
             </div>
           </div>
