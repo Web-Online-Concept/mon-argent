@@ -35,11 +35,11 @@ export default function TransactionForm() {
   }
 
   return (
-    <div className="bg-white rounded-lg p-4 sm:p-8 shadow-lg">
+    <div className="bg-white rounded-lg p-4 sm:p-6 shadow-lg h-full flex flex-col">
       <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-center">✏️ Saisie manuelle</h2>
       
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Type - Ligne séparée sur mobile */}
+      <form onSubmit={handleSubmit} className="flex-1 flex flex-col space-y-4">
+        {/* Type */}
         <div className="w-full">
           <select 
             value={type}
@@ -51,7 +51,7 @@ export default function TransactionForm() {
           </select>
         </div>
         
-        {/* Montant - Ligne séparée */}
+        {/* Montant */}
         <div className="w-full">
           <input 
             type="number" 
@@ -68,7 +68,7 @@ export default function TransactionForm() {
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
         >
           <option value="">Choisir une catégorie...</option>
           {categories.map((cat) => (
@@ -82,14 +82,28 @@ export default function TransactionForm() {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Description" 
-          className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" 
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm" 
           required
         />
+
+        {/* Zone d'exemples pour égaliser la hauteur */}
+        <div className="hidden lg:block bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm flex-1">
+          <p className="font-medium text-blue-800 mb-2">💡 Exemples de saisie :</p>
+          <div className="text-blue-700 space-y-1">
+            <p>• <strong>Dépense :</strong> 15€ - Restaurant midi - Alimentation</p>
+            <p>• <strong>Dépense :</strong> 45€ - Plein essence - Transport</p>
+            <p>• <strong>Revenus :</strong> 2500€ - Salaire février - Revenus</p>
+            <p>• <strong>Dépense :</strong> 89€ - Courses Carrefour - Alimentation</p>
+          </div>
+          <div className="mt-3 text-blue-600 text-xs">
+            <p><strong>Astuce :</strong> Utilisez des descriptions claires pour un meilleur suivi de vos finances.</p>
+          </div>
+        </div>
         
         {/* Bouton Submit */}
         <button 
           type="submit" 
-          className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 sm:px-6 rounded-lg transition-colors"
+          className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 sm:px-6 rounded-lg transition-colors mt-auto"
         >
           ➕ Ajouter la transaction
         </button>

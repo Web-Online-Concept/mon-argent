@@ -33,7 +33,7 @@ const Navigation = ({ activeTab, onTabChange }) => {
       </div>
 
       {/* Menu mobile - 2 lignes de 3 boutons */}
-      <div className="sm:hidden mb-20">
+      <div className="sm:hidden mb-16">
         <div className="grid grid-cols-3 gap-2 mb-4">
           {/* Première ligne - 3 premiers éléments */}
           {menuItems.slice(0, 3).map((item) => (
