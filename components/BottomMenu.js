@@ -61,7 +61,10 @@ const BottomMenu = ({ activeTab, onTabChange }) => {
         </button>
       </div>
     </div>
-  )>
+  )
+}
+
+export default BottomMenu>
           </div>
         </button>
 
