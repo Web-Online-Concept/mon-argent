@@ -1,5 +1,18 @@
 const BottomMenu = ({ activeTab, onTabChange }) => {
   
+  const handleSoldeClick = () => {
+    // Aller au dashboard
+    onTabChange('dashboard')
+    
+    // Après un court délai, scroller vers le haut de la page
+    setTimeout(() => {
+      window.scrollTo({ 
+        top: 0, 
+        behavior: 'smooth' 
+      })
+    }, 100)
+  }
+
   const handleAjoutClick = () => {
     // Aller à la page d'ajout
     onTabChange('add')
@@ -18,7 +31,7 @@ const BottomMenu = ({ activeTab, onTabChange }) => {
       <div className="flex">
         {/* MON SOLDE */}
         <button
-          onClick={() => onTabChange('dashboard')}
+          onClick={handleSoldeClick}
           className={`flex-1 py-3 px-1 transition-colors ${
             activeTab === 'dashboard'
               ? 'bg-blue-50 text-blue-600'
@@ -34,6 +47,29 @@ const BottomMenu = ({ activeTab, onTabChange }) => {
         {/* + AJOUT */}
         <button
           onClick={handleAjoutClick}
+          className={`flex-1 py-3 px-1 transition-colors ${
+            activeTab === 'add'
+              ? 'bg-green-50 text-green-600'
+              : 'text-gray-600 hover:text-green-500'
+          }`}
+        >
+          <div className="flex flex-col items-center gap-1">
+            <span className="text-lg">💵</span>
+            <span className="text-xs font-medium">+ AJOUT</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  )
+}
+
+export default BottomMenu>
+          </div>
+        </button>
+
+        {/* + AJOUT */}
+        <button
+          onClick={() => onTabChange('add')}
           className={`flex-1 py-3 px-1 transition-colors ${
             activeTab === 'add'
               ? 'bg-green-50 text-green-600'
