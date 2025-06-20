@@ -8,6 +8,20 @@ const Navigation = ({ activeTab, onTabChange }) => {
     { id: 'tutorial', icon: '📚', label: 'Tuto' },
   ]
 
+  // Filtrer le tutorial pour mobile (déjà dans le bottom menu)
+  const mobileMenuItems = menuItems.filter(item => item.id !== 'tutorial')const Navigation = ({ activeTab, onTabChange }) => {
+  const menuItems = [
+    { id: 'categories', icon: '🏷️', label: 'Catégories' },
+    { id: 'history', icon: '📋', label: 'Historique' },
+    { id: 'recurrences', icon: '🔄', label: 'Récurrences' },
+    { id: 'settings', icon: '⚙️', label: 'Paramètres' },
+    { id: 'export', icon: '📊', label: 'Export' },
+    { id: 'tutorial', icon: '📚', label: 'Tuto' },
+  ]
+
+  // Filtrer le tutorial pour mobile (déjà dans le bottom menu)
+  const mobileMenuItems = menuItems.filter(item => item.id !== 'tutorial')
+
   return (
     <nav className="mb-6 sm:mb-8">
       {/* Menu desktop - Grille agrandie */}
@@ -32,11 +46,11 @@ const Navigation = ({ activeTab, onTabChange }) => {
         </div>
       </div>
 
-      {/* Menu mobile - 2 lignes de 3 boutons */}
+      {/* Menu mobile - 2 lignes (5 boutons sans TUTO) */}
       <div className="sm:hidden mb-6">
         <div className="grid grid-cols-3 gap-2 mb-4">
           {/* Première ligne - 3 premiers éléments */}
-          {menuItems.slice(0, 3).map((item) => (
+          {mobileMenuItems.slice(0, 3).map((item) => (
             <button
               key={item.id}
               onClick={() => onTabChange(item.id)}
@@ -54,9 +68,9 @@ const Navigation = ({ activeTab, onTabChange }) => {
           ))}
         </div>
         
-        <div className="grid grid-cols-3 gap-2">
-          {/* Deuxième ligne - 3 derniers éléments */}
-          {menuItems.slice(3, 6).map((item) => (
+        <div className="grid grid-cols-2 gap-2">
+          {/* Deuxième ligne - 2 derniers éléments */}
+          {mobileMenuItems.slice(3, 5).map((item) => (
             <button
               key={item.id}
               onClick={() => onTabChange(item.id)}
