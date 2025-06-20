@@ -73,8 +73,8 @@ export default function TransactionList() {
   return (
     <>
       <div className="bg-white rounded-lg shadow-lg">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-bold">📋 Historique des transactions</h2>
+        <div className="p-4 sm:p-6 border-b border-gray-200">
+          <h2 className="text-xl sm:text-2xl font-bold">📋 Historique des transactions</h2>
           <p className="text-gray-600 mt-1">{filteredTransactions.length} transaction(s)</p>
           
           {/* Statistiques des transactions filtrées */}
@@ -94,22 +94,24 @@ export default function TransactionList() {
           
           {/* Filtres */}
           <div className="mt-4 space-y-3">
-            {/* Première ligne de filtres */}
-            <div className="flex flex-wrap gap-3">
+            {/* Première ligne de filtres - CORRIGÉE */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {/* Filtre Type - Largeur fixe */}
               <select 
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
               >
-                <option value="all">Tous les types</option>
-                <option value="credit">💰 Revenus uniquement</option>
-                <option value="debit">💸 Dépenses uniquement</option>
+                <option value="all">Tous types</option>
+                <option value="credit">💰 Revenus</option>
+                <option value="debit">💸 Dépenses</option>
               </select>
               
+              {/* Filtre Catégorie - Largeur fixe */}
               <select 
                 value={filterCategory}
                 onChange={(e) => setFilterCategory(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
               >
                 <option value="all">Toutes catégories</option>
                 {categories.map(cat => (
@@ -117,18 +119,21 @@ export default function TransactionList() {
                 ))}
               </select>
               
-              <input 
-                type="text" 
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="🔍 Rechercher..." 
-                className="px-3 py-2 border border-gray-300 rounded-lg text-sm flex-1 min-w-[200px]"
-              />
+              {/* Recherche - Prend 2 colonnes sur large écran */}
+              <div className="sm:col-span-1 lg:col-span-2">
+                <input 
+                  type="text" 
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="🔍 Rechercher..." 
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                />
+              </div>
             </div>
             
             {/* Deuxième ligne : filtres de dates */}
             <div className="flex flex-wrap items-center gap-3">
-              <span className="text-sm text-gray-600">Période :</span>
+              <span className="text-sm text-gray-600 hidden sm:inline">Période :</span>
               <input 
                 type="date" 
                 value={startDate}
@@ -189,7 +194,7 @@ export default function TransactionList() {
                 onClick={resetFilters}
                 className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg text-sm ml-auto"
               >
-                🔄 Réinitialiser
+                🔄 Reset
               </button>
             </div>
           </div>
