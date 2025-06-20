@@ -38,7 +38,18 @@ export default function TransactionForm() {
     <div className="bg-white rounded-lg p-4 sm:p-6 shadow-lg h-full flex flex-col">
       <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-center">✏️ Saisie manuelle</h2>
       
-      <form onSubmit={handleSubmit} className="flex-1 flex flex-col">
+      {/* Bouton principal - Juste sous le titre */}
+      <div className="mb-4">
+        <button 
+          type="submit" 
+          form="transaction-form"
+          className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-4 px-6 rounded-lg transition-all text-lg"
+        >
+          ➕ Ajouter la transaction
+        </button>
+      </div>
+
+      <form id="transaction-form" onSubmit={handleSubmit} className="flex-1 flex flex-col">
         <div className="space-y-4 flex-1">
           {/* Type */}
           <div className="w-full">
@@ -100,16 +111,6 @@ export default function TransactionForm() {
               <p><strong>Astuce :</strong> Utilisez des descriptions claires pour un meilleur suivi de vos finances.</p>
             </div>
           </div>
-        </div>
-        
-        {/* Bouton Submit - Aligné avec le bouton vocal */}
-        <div className="pt-4">
-          <button 
-            type="submit" 
-            className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-4 px-6 rounded-lg transition-all text-lg"
-          >
-            ➕ Ajouter la transaction
-          </button>
         </div>
       </form>
     </div>

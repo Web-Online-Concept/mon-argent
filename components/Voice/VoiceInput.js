@@ -138,6 +138,20 @@ export default function VoiceInput() {
     <div className="bg-white rounded-lg p-4 sm:p-6 shadow-lg h-full flex flex-col" data-voice-section>
       <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-center">🎤 Commande vocale</h2>
       
+      {/* Bouton principal - Juste sous le titre */}
+      <div className="mb-4">
+        <button
+          onClick={isListening ? stopListening : startListening}
+          className={`w-full font-semibold py-4 px-6 rounded-lg transition-all text-lg ${
+            isListening 
+              ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse' 
+              : 'bg-blue-500 hover:bg-blue-600 text-white'
+          }`}
+        >
+          {isListening ? '🔴 Arrêter l\'écoute' : '🎤 Commencer à parler'}
+        </button>
+      </div>
+      
       <div className="flex-1 flex flex-col">
         <div className="space-y-4 flex-1">
           {/* Instructions */}
@@ -190,20 +204,6 @@ export default function VoiceInput() {
               </button>
             )}
           </div>
-        </div>
-
-        {/* Bouton principal - Aligné avec le bouton de saisie manuelle */}
-        <div className="pt-4">
-          <button
-            onClick={isListening ? stopListening : startListening}
-            className={`w-full font-semibold py-4 px-6 rounded-lg transition-all text-lg ${
-              isListening 
-                ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse' 
-                : 'bg-blue-500 hover:bg-blue-600 text-white'
-            }`}
-          >
-            {isListening ? '🔴 Arrêter l\'écoute' : '🎤 Commencer à parler'}
-          </button>
         </div>
       </div>
     </div>

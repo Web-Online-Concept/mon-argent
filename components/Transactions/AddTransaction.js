@@ -4,7 +4,7 @@ import VoiceInput from '../Voice/VoiceInput'
 export default function AddTransaction() {
   return (
     <div className="w-full max-w-full overflow-x-hidden">
-      <div className="max-w-6xl mx-auto space-y-6">
+      <div className="max-w-6xl mx-auto">
         
         {/* Layout Desktop : Côte à côte */}
         <div className="hidden sm:block">
