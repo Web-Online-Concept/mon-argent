@@ -17,7 +17,6 @@ export default function BudgetSelector() {
   const createBudget = useBudgetStore(state => state.createBudget)
   const deleteBudget = useBudgetStore(state => state.deleteBudget)
   const renameBudget = useBudgetStore(state => state.renameBudget)
-  const getIndividualBudgets = useBudgetStore(state => state.getIndividualBudgets)
 
   const budgetIcons = ['💰', '💼', '🏠', '✈️', '🎯', '💳', '🏦', '💸', '🎓', '🏥', '🚗', '👨‍👩‍👧‍👦']
 
@@ -33,20 +32,12 @@ export default function BudgetSelector() {
       setShowCreateModal(false)
       setShowDropdown(false)
       
-      // Basculer sur le nouveau budget
-      if (confirm('Voulez-vous basculer sur le nouveau budget maintenant ?')) {
-        setActiveBudget(newBudget.id)
-      }
+      alert(`✅ Budget "${newBudget.name}" créé !\n\n⚠️ Note: La séparation des données entre budgets sera implémentée dans la prochaine version.`)
     }
   }
 
   const handleDeleteBudget = (budget) => {
-    if (budget.isPrincipal) {
-      alert('❌ Impossible de supprimer le Budget Principal')
-      return
-    }
-
-    if (confirm(`Supprimer le budget "${budget.name}" ?\n\nToutes les données associées seront perdues !`)) {
+    if (confirm(`Supprimer le budget "${budget.name}" ?`)) {
       deleteBudget(budget.id)
     }
   }
@@ -67,22 +58,6 @@ export default function BudgetSelector() {
     }
   }
 
-  // Calculer les totaux pour l'affichage (version simplifiée)
-  const getBudgetDisplayInfo = (budget) => {
-    if (budget.isPrincipal) {
-      const individualBudgets = getIndividualBudgets()
-      return {
-        balance: 0, // Calculé dynamiquement ailleurs
-        subtitle: `${individualBudgets.length} budget(s) • Total agrégé`
-      }
-    } else {
-      return {
-        balance: 0, // Calculé dynamiquement ailleurs
-        subtitle: 'Budget individuel'
-      }
-    }
-  }
-
   // Affichage temporaire pendant l'hydratation
   if (!isClient) {
     return (
@@ -93,80 +68,62 @@ export default function BudgetSelector() {
     )
   }
 
-  const currentBudgetInfo = getBudgetDisplayInfo(activeBudget)
-
   return (
     <>
       <div className="relative">
         <button
           onClick={() => setShowDropdown(!showDropdown)}
-          className="flex items-center gap-2 px-4 py-3 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow min-w-[280px]"
+          className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
         >
           <span className="text-xl">{activeBudget.icon}</span>
-          <div className="flex-1 text-left">
-            <div className="font-medium">{activeBudget.name}</div>
-            <div className="text-sm text-gray-500">
-              {currentBudgetInfo.subtitle}
-            </div>
-          </div>
+          <span className="font-medium">{activeBudget.name}</span>
           <span className="text-gray-400">▼</span>
         </button>
 
         {showDropdown && (
-          <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-xl z-50 min-w-[350px]">
-            <div className="max-h-80 overflow-y-auto">
-              {budgets.map(budget => {
-                const budgetInfo = getBudgetDisplayInfo(budget)
-                return (
-                  <div
-                    key={budget.id}
-                    className={`flex items-center justify-between p-4 hover:bg-gray-50 ${
-                      budget.id === activeBudget.id ? 'bg-blue-50' : ''
-                    }`}
+          <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-xl z-50 min-w-[300px]">
+            <div className="max-h-64 overflow-y-auto">
+              {budgets.map(budget => (
+                <div
+                  key={budget.id}
+                  className={`flex items-center justify-between p-3 hover:bg-gray-50 ${
+                    budget.id === activeBudget.id ? 'bg-blue-50' : ''
+                  }`}
+                >
+                  <button
+                    onClick={() => {
+                      setActiveBudget(budget.id)
+                      setShowDropdown(false)
+                    }}
+                    className="flex items-center gap-2 flex-1 text-left"
                   >
+                    <span className="text-xl">{budget.icon}</span>
+                    <span className={budget.id === activeBudget.id ? 'font-semibold' : ''}>
+                      {budget.name}
+                    </span>
+                  </button>
+                  
+                  <div className="flex items-center gap-1">
                     <button
-                      onClick={() => {
-                        setActiveBudget(budget.id)
-                        setShowDropdown(false)
-                      }}
-                      className="flex items-center gap-3 flex-1 text-left"
+                      onClick={() => handleStartRename(budget)}
+                      className="text-blue-500 hover:text-blue-700 p-1"
+                      title="Renommer"
                     >
-                      <span className="text-xl">{budget.icon}</span>
-                      <div>
-                        <div className={`${budget.id === activeBudget.id ? 'font-semibold' : ''} ${budget.isPrincipal ? 'text-blue-700' : ''}`}>
-                          {budget.name}
-                          {budget.isPrincipal && <span className="text-xs ml-2 px-2 py-1 bg-blue-100 text-blue-700 rounded">TOTAL</span>}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {budgetInfo.subtitle}
-                        </div>
-                      </div>
+                      ✏️
                     </button>
                     
-                    <div className="flex items-center gap-1">
-                      {!budget.isPrincipal && (
-                        <button
-                          onClick={() => handleStartRename(budget)}
-                          className="text-blue-500 hover:text-blue-700 p-1"
-                          title="Renommer"
-                        >
-                          ✏️
-                        </button>
-                      )}
-                      
-                      {!budget.isPrincipal && (
-                        <button
-                          onClick={() => handleDeleteBudget(budget)}
-                          className="text-red-500 hover:text-red-700 p-1"
-                          title="Supprimer"
-                        >
-                          🗑️
-                        </button>
-                      )}
-                    </div>
+                    {budget.id !== 'default' && (
+                      <button
+                        onClick={() => handleDeleteBudget(budget)}
+                        className="text-red-500 hover:text-red-700 p-1"
+                        title="Supprimer"
+                      >
+                        🗑️
+                      </button>
+                    )}
                   </div>
-                )
-              })}
+                </div>
+              ))}
             </div>
             
             <div className="border-t p-3">
@@ -199,7 +156,7 @@ export default function BudgetSelector() {
                   type="text"
                   value={newBudgetName}
                   onChange={(e) => setNewBudgetName(e.target.value)}
-                  placeholder="Ex: Budget Vacances, Budget Maison..."
+                  placeholder="Ex: Budget Vacances, Budget Pro..."
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   autoFocus
                 />
@@ -226,9 +183,9 @@ export default function BudgetSelector() {
                 </div>
               </div>
 
-              <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                <p className="text-sm text-green-800">
-                  💡 <strong>Nouveau :</strong> Chaque budget aura ses propres transactions, complètement séparées. Le "Budget Principal" affichera automatiquement la somme de tous vos budgets.
+              <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
+                <p className="text-sm text-orange-800">
+                  ⚠️ <strong>Note :</strong> Les budgets multiples avec données séparées seront implémentés dans la prochaine version. Pour l'instant, tous les budgets partagent les mêmes données.
                 </p>
               </div>
 
