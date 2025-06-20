@@ -1,22 +1,29 @@
-import '../styles/globals.css'
-import { useEffect } from 'react'
-import Head from 'next/head'
+import '../styles/globals.css';
+import Layout from '../components/Layout';
+import DataMigration from '../components/DataMigration';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 function MyApp({ Component, pageProps }) {
+  const router = useRouter();
+  
   useEffect(() => {
-    console.log('🚀 Mon Budget Pro - Application démarrée')
-  }, [])
+    // Vérifier si l'utilisateur a déjà visité l'app
+    const hasVisited = localStorage.getItem('hasVisited');
+    
+    // Si c'est la première visite et qu'on n'est pas déjà sur le tutoriel
+    if (!hasVisited && router.pathname !== '/tutorial') {
+      router.push('/tutorial');
+    }
+  }, [router]);
 
   return (
-    <>
-      <Head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-        <meta name="theme-color" content="#3b82f6" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <Component {...pageProps} />
-    </>
-  )
+    <DataMigration>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </DataMigration>
+  );
 }
 
-export default MyApp
+export default MyApp;

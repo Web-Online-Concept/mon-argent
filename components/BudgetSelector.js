@@ -1,269 +1,216 @@
-import { useState, useEffect } from 'react'
-import useBudgetStore from '../lib/store/budgetStore'
+import { useState } from 'react';
+import useBudgetStore from '../lib/store/budgetStore';
+import useTransactionStore from '../lib/store/transactionStore';
 
 export default function BudgetSelector() {
-  const [showDropdown, setShowDropdown] = useState(false)
-  const [showCreateModal, setShowCreateModal] = useState(false)
-  const [showRenameModal, setShowRenameModal] = useState(false)
-  const [budgetToRename, setBudgetToRename] = useState(null)
-  const [newBudgetName, setNewBudgetName] = useState('')
-  const [renameBudgetName, setRenameBudgetName] = useState('')
-  const [selectedIcon, setSelectedIcon] = useState('💼')
-  const [isClient, setIsClient] = useState(false)
+  const { 
+    budgets, 
+    currentBudgetId, 
+    setCurrentBudget, 
+    addBudget, 
+    updateBudget, 
+    deleteBudget 
+  } = useBudgetStore();
+  const { deleteBudgetData } = useTransactionStore();
   
-  const budgets = useBudgetStore(state => state.budgets)
-  const activeBudget = useBudgetStore(state => state.getActiveBudget())
-  const setActiveBudget = useBudgetStore(state => state.setActiveBudget)
-  const createBudget = useBudgetStore(state => state.createBudget)
-  const deleteBudget = useBudgetStore(state => state.deleteBudget)
-  const renameBudget = useBudgetStore(state => state.renameBudget)
-
-  const budgetIcons = ['💰', '💼', '🏠', '✈️', '🎯', '💳', '🏦', '💸', '🎓', '🏥', '🚗', '👨‍👩‍👧‍👦']
-
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
-
-  const handleCreateBudget = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newBudgetName, setNewBudgetName] = useState('');
+  const [newBudgetIcon, setNewBudgetIcon] = useState('💼');
+  const [editingBudget, setEditingBudget] = useState(null);
+  
+  const currentBudget = budgets.find(b => b.id === currentBudgetId);
+  
+  const emojis = ['💰', '🏠', '🚗', '✈️', '🎓', '💼', '🛒', '🏦', '💳', '🎯'];
+  
+  const handleAddBudget = (e) => {
+    e.preventDefault();
     if (newBudgetName.trim()) {
-      const newBudget = createBudget(newBudgetName, selectedIcon)
-      setNewBudgetName('')
-      setSelectedIcon('💼')
-      setShowCreateModal(false)
-      setShowDropdown(false)
-      
-      alert(`✅ Budget "${newBudget.name}" créé !\n\n⚠️ Note: La séparation des données entre budgets sera implémentée dans la prochaine version.`)
+      const newBudget = addBudget(newBudgetName.trim(), newBudgetIcon);
+      setCurrentBudget(newBudget.id);
+      setNewBudgetName('');
+      setNewBudgetIcon('💼');
+      setShowAddForm(false);
     }
-  }
-
-  const handleDeleteBudget = (budget) => {
-    if (confirm(`Supprimer le budget "${budget.name}" ?`)) {
-      deleteBudget(budget.id)
+  };
+  
+  const handleEditBudget = (budget) => {
+    setEditingBudget(budget);
+    setNewBudgetName(budget.name);
+    setNewBudgetIcon(budget.icon);
+  };
+  
+  const handleUpdateBudget = (e) => {
+    e.preventDefault();
+    if (editingBudget && newBudgetName.trim()) {
+      updateBudget(editingBudget.id, {
+        name: newBudgetName.trim(),
+        icon: newBudgetIcon
+      });
+      setEditingBudget(null);
+      setNewBudgetName('');
+      setNewBudgetIcon('💼');
     }
-  }
-
-  const handleStartRename = (budget) => {
-    setBudgetToRename(budget)
-    setRenameBudgetName(budget.name)
-    setShowRenameModal(true)
-    setShowDropdown(false)
-  }
-
-  const handleRenameBudget = () => {
-    if (renameBudgetName.trim() && budgetToRename) {
-      renameBudget(budgetToRename.id, renameBudgetName)
-      setShowRenameModal(false)
-      setBudgetToRename(null)
-      setRenameBudgetName('')
+  };
+  
+  const handleDeleteBudget = (budgetId) => {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce budget et toutes ses transactions ?')) {
+      deleteBudget(budgetId);
+      deleteBudgetData(budgetId);
     }
-  }
-
-  // Affichage temporaire pendant l'hydratation
-  if (!isClient) {
-    return (
-      <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-md">
-        <span className="text-xl">💰</span>
-        <span className="font-medium">Chargement...</span>
-      </div>
-    )
-  }
+  };
+  
+  const handleSelectBudget = (budgetId) => {
+    setCurrentBudget(budgetId);
+    setIsOpen(false);
+  };
 
   return (
-    <>
-      <div className="relative">
-        <button
-          onClick={() => setShowDropdown(!showDropdown)}
-          className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
-        >
-          <span className="text-xl">{activeBudget.icon}</span>
-          <span className="font-medium">{activeBudget.name}</span>
-          <span className="text-gray-400">▼</span>
-        </button>
-
-        {showDropdown && (
-          <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-xl z-50 min-w-[300px]">
-            <div className="max-h-64 overflow-y-auto">
+    <div className="relative">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-2 px-4 py-2 bg-white border rounded-lg hover:bg-gray-50 transition-colors"
+      >
+        <span className="text-xl">{currentBudget?.icon}</span>
+        <span className="font-medium">{currentBudget?.name}</span>
+        <svg className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      
+      {isOpen && (
+        <div className="absolute top-full mt-2 w-72 bg-white border rounded-lg shadow-lg z-50">
+          <div className="p-4">
+            <h3 className="font-semibold mb-3">Mes budgets</h3>
+            
+            {/* Liste des budgets */}
+            <div className="space-y-2 mb-4">
               {budgets.map(budget => (
                 <div
                   key={budget.id}
-                  className={`flex items-center justify-between p-3 hover:bg-gray-50 ${
-                    budget.id === activeBudget.id ? 'bg-blue-50' : ''
-                  }`}
+                  className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors ${
+                    budget.id === currentBudgetId 
+                      ? 'bg-blue-50 border border-blue-200' 
+                      : 'hover:bg-gray-50'
+                  } ${budget.isMain ? 'bg-gradient-to-r from-blue-50 to-purple-50' : ''}`}
+                  onClick={() => handleSelectBudget(budget.id)}
                 >
-                  <button
-                    onClick={() => {
-                      setActiveBudget(budget.id)
-                      setShowDropdown(false)
-                    }}
-                    className="flex items-center gap-2 flex-1 text-left"
-                  >
-                    <span className="text-xl">{budget.icon}</span>
-                    <span className={budget.id === activeBudget.id ? 'font-semibold' : ''}>
-                      {budget.name}
-                    </span>
-                  </button>
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">{budget.icon}</span>
+                    <div>
+                      <p className="font-medium">{budget.name}</p>
+                      {budget.isMain && (
+                        <p className="text-xs text-gray-600">Vue d'ensemble</p>
+                      )}
+                    </div>
+                  </div>
                   
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={() => handleStartRename(budget)}
-                      className="text-blue-500 hover:text-blue-700 p-1"
-                      title="Renommer"
-                    >
-                      ✏️
-                    </button>
-                    
-                    {budget.id !== 'default' && (
+                  {!budget.isMain && budget.id !== 'budget-default' && (
+                    <div className="flex gap-1">
                       <button
-                        onClick={() => handleDeleteBudget(budget)}
-                        className="text-red-500 hover:text-red-700 p-1"
-                        title="Supprimer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditBudget(budget);
+                        }}
+                        className="p-1 text-gray-600 hover:bg-gray-200 rounded"
+                      >
+                        ✏️
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteBudget(budget.id);
+                        }}
+                        className="p-1 text-red-600 hover:bg-red-50 rounded"
                       >
                         🗑️
                       </button>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
             
-            <div className="border-t p-3">
-              <button
-                onClick={() => {
-                  setShowCreateModal(true)
-                  setShowDropdown(false)
-                }}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-              >
-                ➕ Nouveau budget
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Modal de création */}
-      {showCreateModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <h3 className="text-xl font-bold mb-4">➕ Créer un nouveau budget</h3>
-            
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Nom du budget
-                </label>
+            {/* Formulaire d'ajout/édition */}
+            {(showAddForm || editingBudget) && (
+              <form onSubmit={editingBudget ? handleUpdateBudget : handleAddBudget} className="border-t pt-4">
+                <h4 className="font-medium mb-3">
+                  {editingBudget ? 'Modifier le budget' : 'Nouveau budget'}
+                </h4>
+                
                 <input
                   type="text"
                   value={newBudgetName}
                   onChange={(e) => setNewBudgetName(e.target.value)}
-                  placeholder="Ex: Budget Vacances, Budget Pro..."
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  placeholder="Nom du budget"
+                  className="w-full p-2 border rounded-lg mb-3"
                   autoFocus
+                  required
                 />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Choisir une icône
-                </label>
-                <div className="grid grid-cols-6 gap-2">
-                  {budgetIcons.map(icon => (
-                    <button
-                      key={icon}
-                      onClick={() => setSelectedIcon(icon)}
-                      className={`text-2xl p-2 rounded-lg transition-all ${
-                        selectedIcon === icon 
-                          ? 'bg-blue-100 ring-2 ring-blue-500' 
-                          : 'hover:bg-gray-100'
-                      }`}
-                    >
-                      {icon}
-                    </button>
-                  ))}
+                
+                <div className="mb-3">
+                  <label className="block text-sm text-gray-600 mb-2">Icône</label>
+                  <div className="grid grid-cols-5 gap-2">
+                    {emojis.map(emoji => (
+                      <button
+                        key={emoji}
+                        type="button"
+                        onClick={() => setNewBudgetIcon(emoji)}
+                        className={`p-2 text-2xl rounded-lg transition-colors ${
+                          newBudgetIcon === emoji 
+                            ? 'bg-blue-100 ring-2 ring-blue-500' 
+                            : 'hover:bg-gray-100'
+                        }`}
+                      >
+                        {emoji}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-
-              <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
-                <p className="text-sm text-orange-800">
-                  ⚠️ <strong>Note :</strong> Les budgets multiples avec données séparées seront implémentés dans la prochaine version. Pour l'instant, tous les budgets partagent les mêmes données.
-                </p>
-              </div>
-
-              <div className="flex gap-4">
-                <button
-                  onClick={() => {
-                    setShowCreateModal(false)
-                    setNewBudgetName('')
-                    setSelectedIcon('💼')
-                  }}
-                  className="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg"
-                >
-                  Annuler
-                </button>
-                <button
-                  onClick={handleCreateBudget}
-                  disabled={!newBudgetName.trim()}
-                  className={`flex-1 py-2 px-4 rounded-lg font-medium ${
-                    newBudgetName.trim()
-                      ? 'bg-blue-500 hover:bg-blue-600 text-white'
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  }`}
-                >
-                  ✅ Créer
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modal de renommage */}
-      {showRenameModal && budgetToRename && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <h3 className="text-xl font-bold mb-4">✏️ Renommer le budget</h3>
+                
+                <div className="flex gap-2">
+                  <button
+                    type="submit"
+                    className="flex-1 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors"
+                  >
+                    {editingBudget ? 'Modifier' : 'Créer'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowAddForm(false);
+                      setEditingBudget(null);
+                      setNewBudgetName('');
+                      setNewBudgetIcon('💼');
+                    }}
+                    className="flex-1 bg-gray-200 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors"
+                  >
+                    Annuler
+                  </button>
+                </div>
+              </form>
+            )}
             
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Nouveau nom pour "{budgetToRename.name}"
-                </label>
-                <input
-                  type="text"
-                  value={renameBudgetName}
-                  onChange={(e) => setRenameBudgetName(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  autoFocus
-                />
-              </div>
-
-              <div className="flex gap-4">
-                <button
-                  onClick={() => {
-                    setShowRenameModal(false)
-                    setBudgetToRename(null)
-                    setRenameBudgetName('')
-                  }}
-                  className="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg"
-                >
-                  Annuler
-                </button>
-                <button
-                  onClick={handleRenameBudget}
-                  disabled={!renameBudgetName.trim()}
-                  className={`flex-1 py-2 px-4 rounded-lg font-medium ${
-                    renameBudgetName.trim()
-                      ? 'bg-blue-500 hover:bg-blue-600 text-white'
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  }`}
-                >
-                  ✅ Renommer
-                </button>
-              </div>
-            </div>
+            {/* Bouton d'ajout */}
+            {!showAddForm && !editingBudget && (
+              <button
+                onClick={() => setShowAddForm(true)}
+                className="w-full py-2 px-4 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+              >
+                + Ajouter un budget
+              </button>
+            )}
           </div>
         </div>
       )}
-    </>
-  )
+      
+      {/* Overlay pour fermer le menu */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 z-40" 
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+    </div>
+  );
 }
