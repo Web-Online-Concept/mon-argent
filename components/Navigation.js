@@ -1,81 +1,37 @@
-const Navigation = ({ activeTab, onTabChange }) => {
-  const menuItems = [
-    { id: 'categories', icon: '🏷️', label: 'Catégories' },
-    { id: 'history', icon: '📋', label: 'Historique' },
-    { id: 'recurrences', icon: '🔄', label: 'Récurrences' },
-    { id: 'settings', icon: '⚙️', label: 'Paramètres' },
-    { id: 'export', icon: '📊', label: 'Export' },
-    { id: 'tutorial', icon: '📚', label: 'Tuto' },
+import { useState } from 'react'
+
+export default function Navigation({ activeTab, onTabChange }) {
+  const tabs = [
+    { id: 'dashboard', label: 'Tableau de bord', icon: '📊' },
+    { id: 'add', label: 'Ajouter', icon: '➕' },
+    { id: 'categories', label: 'Catégories', icon: '🏷️' },
+    { id: 'history', label: 'Historique', icon: '📋' },
+    { id: 'recurrences', label: 'Récurrences', icon: '🔄' },
+    { id: 'settings', label: 'Paramètres', icon: '⚙️' },
+    { id: 'export', label: 'Export', icon: '📤' },
+    { id: 'tutorial', label: 'Aide', icon: '❓' }
   ]
 
   return (
-    <nav className="mb-6 sm:mb-8">
-      {/* Menu desktop - Grille agrandie */}
-      <div className="hidden sm:block">
-        <div className="grid grid-cols-3 lg:grid-cols-6 gap-3">
-          {menuItems.map((item) => (
+    <div className="flex justify-center mb-8">
+      <div className="bg-white rounded-lg p-1 shadow-lg">
+        <div className="flex flex-wrap justify-center gap-1">
+          {tabs.map(tab => (
             <button
-              key={item.id}
-              onClick={() => onTabChange(item.id)}
-              className={`p-4 rounded-lg border-2 transition-all hover:shadow-md ${
-                activeTab === item.id
-                  ? 'border-blue-500 bg-blue-50 text-blue-700'
-                  : 'border-gray-200 bg-white hover:border-gray-300'
+              key={tab.id}
+              onClick={() => onTabChange(tab.id)}
+              className={`px-3 py-2 rounded-md font-medium transition-all text-sm ${
+                activeTab === tab.id
+                  ? 'bg-blue-500 text-white shadow-md'
+                  : 'text-gray-600 hover:text-blue-500'
               }`}
             >
-              <div className="flex flex-col items-center gap-2">
-                <span className="text-2xl">{item.icon}</span>
-                <span className="text-sm font-medium">{item.label}</span>
-              </div>
+              <span className="mr-1">{tab.icon}</span>
+              <span className="hidden sm:inline">{tab.label}</span>
             </button>
           ))}
         </div>
       </div>
-
-      {/* Menu mobile - 2 lignes de 3 boutons */}
-      <div className="sm:hidden mb-6">
-        <div className="grid grid-cols-3 gap-2 mb-4">
-          {/* Première ligne - 3 premiers éléments */}
-          {menuItems.slice(0, 3).map((item) => (
-            <button
-              key={item.id}
-              onClick={() => onTabChange(item.id)}
-              className={`p-3 rounded-lg border-2 transition-all ${
-                activeTab === item.id
-                  ? 'border-blue-500 bg-blue-50 text-blue-700'
-                  : 'border-gray-200 bg-white hover:border-gray-300'
-              }`}
-            >
-              <div className="flex flex-col items-center gap-1">
-                <span className="text-lg">{item.icon}</span>
-                <span className="text-xs font-medium text-center leading-tight">{item.label}</span>
-              </div>
-            </button>
-          ))}
-        </div>
-        
-        <div className="grid grid-cols-3 gap-2">
-          {/* Deuxième ligne - 3 derniers éléments */}
-          {menuItems.slice(3, 6).map((item) => (
-            <button
-              key={item.id}
-              onClick={() => onTabChange(item.id)}
-              className={`p-3 rounded-lg border-2 transition-all ${
-                activeTab === item.id
-                  ? 'border-blue-500 bg-blue-50 text-blue-700'
-                  : 'border-gray-200 bg-white hover:border-gray-300'
-              }`}
-            >
-              <div className="flex flex-col items-center gap-1">
-                <span className="text-lg">{item.icon}</span>
-                <span className="text-xs font-medium text-center leading-tight">{item.label}</span>
-              </div>
-            </button>
-          ))}
-        </div>
-      </div>
-    </nav>
+    </div>
   )
 }
-
-export default Navigation

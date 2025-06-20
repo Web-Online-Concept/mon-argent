@@ -54,102 +54,94 @@ export default function CategoryManager() {
   }
 
   return (
-    <div className="w-full max-w-full overflow-x-hidden">
-      <div className="space-y-6">
-        <div className="bg-white rounded-lg p-3 shadow-lg">
-          <h2 className="text-xl font-bold mb-4">🏷️ Gestion des catégories</h2>
-          
-          {/* Ajouter catégorie - ULTRA SIMPLE */}
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold mb-3">➕ Ajouter une catégorie</h3>
-            
-            {/* Input sur une ligne */}
-            <div className="w-full mb-2">
-              <input 
-                type="text" 
-                value={newCategory}
-                onChange={(e) => setNewCategory(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleAddCategory()}
-                placeholder="Nom de la nouvelle catégorie" 
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            
-            {/* Bouton sur une ligne séparée */}
-            <div className="w-full">
-              <button 
-                onClick={handleAddCategory}
-                className="w-full bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg"
-              >
-                Ajouter
-              </button>
-            </div>
-          </div>
-
-          {/* Liste des catégories */}
-          <div>
-            <h3 className="text-lg font-semibold mb-3">📋 Catégories existantes</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-              {categories.map((category) => {
-                const stats = getCategoryStats(category)
-                return (
-                  <div 
-                    key={category} 
-                    className={`p-4 rounded-lg border-2 transition-all ${
-                      stats.isUsed ? 'border-green-200 bg-green-50' : 'border-gray-200 bg-gray-50'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-medium text-gray-800 truncate mr-2">{category}</h4>
-                      <button 
-                        onClick={() => handleDeleteCategory(category)}
-                        className={`text-sm hover:scale-110 transition-transform flex-shrink-0 ${
-                          stats.isUsed ? 'text-orange-600 hover:text-red-600' : 'text-red-500 hover:text-red-700'
-                        }`}
-                        title={stats.isUsed ? 'Supprimer (avec transfert)' : 'Supprimer'}
-                      >
-                        {stats.isUsed ? '⚠️' : '✕'}
-                      </button>
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      {stats.isUsed ? (
-                        <>
-                          <p>{stats.count} transaction(s)</p>
-                          <p className={stats.total >= 0 ? 'text-green-600' : 'text-red-600'}>
-                            {stats.total >= 0 ? '+' : ''}{stats.total.toFixed(2)}€
-                          </p>
-                        </>
-                      ) : (
-                        <p className="text-gray-400">Non utilisée</p>
-                      )}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
+    <div className="space-y-6">
+      <div className="bg-white rounded-lg p-6 shadow-lg">
+        <h2 className="text-2xl font-bold mb-4">🏷️ Gestion des catégories</h2>
+        
+        {/* Ajouter catégorie */}
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold mb-3">➕ Ajouter une catégorie</h3>
+          <div className="flex gap-4">
+            <input 
+              type="text" 
+              value={newCategory}
+              onChange={(e) => setNewCategory(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleAddCategory()}
+              placeholder="Nom de la nouvelle catégorie" 
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            />
+            <button 
+              onClick={handleAddCategory}
+              className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg"
+            >
+              Ajouter
+            </button>
           </div>
         </div>
 
-        {/* Stats globales */}
-        <div className="bg-white rounded-lg p-3 shadow-lg">
-          <h3 className="text-lg font-semibold mb-4">📊 Statistiques des catégories</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="text-center p-4 bg-blue-50 rounded-lg">
-              <p className="text-2xl font-bold text-blue-600">{categories.length}</p>
-              <p className="text-sm text-gray-600">Catégories totales</p>
-            </div>
-            <div className="text-center p-4 bg-green-50 rounded-lg">
-              <p className="text-2xl font-bold text-green-600">
-                {categories.filter(c => getCategoryStats(c).isUsed).length}
-              </p>
-              <p className="text-sm text-gray-600">Catégories utilisées</p>
-            </div>
-            <div className="text-center p-4 bg-orange-50 rounded-lg">
-              <p className="text-2xl font-bold text-orange-600">
-                {categories.filter(c => !getCategoryStats(c).isUsed).length}
-              </p>
-              <p className="text-sm text-gray-600">Catégories vides</p>
-            </div>
+        {/* Liste des catégories */}
+        <div>
+          <h3 className="text-lg font-semibold mb-3">📋 Catégories existantes</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {categories.map((category) => {
+              const stats = getCategoryStats(category)
+              return (
+                <div 
+                  key={category} 
+                  className={`p-4 rounded-lg border-2 transition-all ${
+                    stats.isUsed ? 'border-green-200 bg-green-50' : 'border-gray-200 bg-gray-50'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-medium text-gray-800">{category}</h4>
+                    <button 
+                      onClick={() => handleDeleteCategory(category)}
+                      className={`text-sm hover:scale-110 transition-transform ${
+                        stats.isUsed ? 'text-orange-600 hover:text-red-600' : 'text-red-500 hover:text-red-700'
+                      }`}
+                      title={stats.isUsed ? 'Supprimer (avec transfert)' : 'Supprimer'}
+                    >
+                      {stats.isUsed ? '⚠️' : '✕'}
+                    </button>
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {stats.isUsed ? (
+                      <>
+                        <p>{stats.count} transaction(s)</p>
+                        <p className={stats.total >= 0 ? 'text-green-600' : 'text-red-600'}>
+                          {stats.total >= 0 ? '+' : ''}{stats.total.toFixed(2)}€
+                        </p>
+                      </>
+                    ) : (
+                      <p className="text-gray-400">Non utilisée</p>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Stats globales */}
+      <div className="bg-white rounded-lg p-6 shadow-lg">
+        <h3 className="text-xl font-semibold mb-4">📊 Statistiques des catégories</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="text-center p-4 bg-blue-50 rounded-lg">
+            <p className="text-2xl font-bold text-blue-600">{categories.length}</p>
+            <p className="text-sm text-gray-600">Catégories totales</p>
+          </div>
+          <div className="text-center p-4 bg-green-50 rounded-lg">
+            <p className="text-2xl font-bold text-green-600">
+              {categories.filter(c => getCategoryStats(c).isUsed).length}
+            </p>
+            <p className="text-sm text-gray-600">Catégories utilisées</p>
+          </div>
+          <div className="text-center p-4 bg-orange-50 rounded-lg">
+            <p className="text-2xl font-bold text-orange-600">
+              {categories.filter(c => !getCategoryStats(c).isUsed).length}
+            </p>
+            <p className="text-sm text-gray-600">Catégories vides</p>
           </div>
         </div>
       </div>
