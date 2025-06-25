@@ -561,7 +561,7 @@ const App = () => {
             </div>
             
             {/* Format mobile */}
-            <div className="sm:hidden w-full h-[100px] bg-gray-100 rounded-lg overflow-hidden">
+            <div className="sm:hidden w-full h-[50px] bg-gray-100 rounded-lg overflow-hidden">
               <img 
                 src="/pub-mobile.jpg" 
                 alt="N26 - La banque mobile" 
@@ -592,7 +592,7 @@ const App = () => {
 
     return (
       <div className="p-4 max-w-4xl mx-auto">
-        <h1 className="text-2xl font-bold mb-6">Historique</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center">Historique</h1>
         
         {/* Résumé */}
         <div className="bg-white rounded-lg shadow overflow-hidden mb-6">
@@ -875,7 +875,7 @@ const App = () => {
   // Page assistant
   const AssistantPage = () => (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)] p-4">
-      <h1 className="text-2xl font-bold mb-8">Assistant Vocal</h1>
+      <h1 className="text-2xl font-bold mb-8 text-center">Assistant Vocal</h1>
       
       <div className="w-full max-w-md">
         <button
@@ -932,7 +932,7 @@ const App = () => {
   // Page Paramètres
   const SettingsPage = () => (
     <div className="p-4 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Paramètres</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center">Paramètres</h1>
       
       {/* Section Solde initial */}
       <div className="bg-white rounded-lg shadow p-6 mb-6">
@@ -1071,7 +1071,7 @@ const App = () => {
   // Page Tutoriel
   const TutorialPage = () => (
     <div className="p-4 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Guide d'utilisation</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center">Guide d'utilisation</h1>
       
       <div className="space-y-6">
         <div className="bg-white rounded-lg shadow p-6">
@@ -1148,7 +1148,7 @@ const App = () => {
       >
         ← Retour aux paramètres
       </button>
-      <h1 className="text-2xl font-bold mb-6">Conditions Générales d'Utilisation</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center">Conditions Générales d'Utilisation</h1>
       <div className="bg-white rounded-lg shadow p-6 space-y-4">
         <p><strong>Dernière mise à jour :</strong> {new Date().toLocaleDateString('fr-FR')}</p>
         
@@ -1184,7 +1184,7 @@ const App = () => {
       >
         ← Retour aux paramètres
       </button>
-      <h1 className="text-2xl font-bold mb-6">Politique de Confidentialité</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center">Politique de Confidentialité</h1>
       <div className="bg-white rounded-lg shadow p-6 space-y-4">
         <p><strong>Dernière mise à jour :</strong> {new Date().toLocaleDateString('fr-FR')}</p>
         
@@ -1217,7 +1217,7 @@ const App = () => {
       >
         ← Retour aux paramètres
       </button>
-      <h1 className="text-2xl font-bold mb-6">Politique des Cookies</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center">Politique des Cookies</h1>
       <div className="bg-white rounded-lg shadow p-6 space-y-4">
         <p><strong>Dernière mise à jour :</strong> {new Date().toLocaleDateString('fr-FR')}</p>
         
@@ -1328,47 +1328,47 @@ const App = () => {
           <button
             onClick={() => setCurrentPage('home')}
             className={`flex flex-col items-center justify-center flex-1 h-full ${
-              currentPage === 'home' ? 'text-blue-600' : 'text-gray-400'
+              currentPage === 'home' ? 'bg-gray-50' : ''
             }`}
           >
-            <Home size={24} />
-            <span className="text-xs mt-1">Accueil</span>
+            <Home size={24} className={currentPage === 'home' ? 'text-green-600' : 'text-green-500'} />
+            <span className={`text-xs mt-1 ${currentPage === 'home' ? 'text-black font-semibold' : 'text-gray-700'}`}>Accueil</span>
           </button>
           <button
             onClick={() => setCurrentPage('history')}
             className={`flex flex-col items-center justify-center flex-1 h-full ${
-              currentPage === 'history' ? 'text-blue-600' : 'text-gray-400'
+              currentPage === 'history' ? 'bg-gray-50' : ''
             }`}
           >
-            <History size={24} />
-            <span className="text-xs mt-1">Historique</span>
+            <History size={24} className={currentPage === 'history' ? 'text-blue-600' : 'text-blue-500'} />
+            <span className={`text-xs mt-1 ${currentPage === 'history' ? 'text-black font-semibold' : 'text-gray-700'}`}>Historique</span>
           </button>
           <button
             onClick={() => setCurrentPage('assistant')}
             className={`flex flex-col items-center justify-center flex-1 h-full ${
-              currentPage === 'assistant' ? 'text-blue-600' : 'text-gray-400'
+              currentPage === 'assistant' ? 'bg-gray-50' : ''
             }`}
           >
-            <MessageSquare size={24} />
-            <span className="text-xs mt-1">Assistant</span>
+            <MessageSquare size={24} className={currentPage === 'assistant' ? 'text-purple-600' : 'text-purple-500'} />
+            <span className={`text-xs mt-1 ${currentPage === 'assistant' ? 'text-black font-semibold' : 'text-gray-700'}`}>Assistant</span>
           </button>
           <button
             onClick={() => setCurrentPage('tutorial')}
             className={`flex flex-col items-center justify-center flex-1 h-full ${
-              currentPage === 'tutorial' ? 'text-blue-600' : 'text-gray-400'
+              currentPage === 'tutorial' ? 'bg-gray-50' : ''
             }`}
           >
-            <HelpCircle size={24} />
-            <span className="text-xs mt-1">Aide</span>
+            <HelpCircle size={24} className={currentPage === 'tutorial' ? 'text-orange-600' : 'text-orange-500'} />
+            <span className={`text-xs mt-1 ${currentPage === 'tutorial' ? 'text-black font-semibold' : 'text-gray-700'}`}>Aide</span>
           </button>
           <button
             onClick={() => setCurrentPage('settings')}
             className={`flex flex-col items-center justify-center flex-1 h-full ${
-              currentPage === 'settings' ? 'text-blue-600' : 'text-gray-400'
+              currentPage === 'settings' ? 'bg-gray-50' : ''
             }`}
           >
-            <Settings size={24} />
-            <span className="text-xs mt-1">Paramètres</span>
+            <Settings size={24} className={currentPage === 'settings' ? 'text-gray-800' : 'text-gray-600'} />
+            <span className={`text-xs mt-1 ${currentPage === 'settings' ? 'text-black font-semibold' : 'text-gray-700'}`}>Paramètres</span>
           </button>
         </div>
       </nav>
