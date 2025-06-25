@@ -959,7 +959,11 @@ const App = () => {
                         <Edit size={18} />
                       </button>
                       <button
-                        onClick={() => setTransactions(transactions.filter(t => t.id !== transaction.id))}
+                        onClick={() => {
+                          if (window.confirm('Êtes-vous sûr de vouloir supprimer cette transaction ?')) {
+                            setTransactions(transactions.filter(t => t.id !== transaction.id));
+                          }
+                        }}
                         className="text-red-500 hover:text-red-700 p-1"
                       >
                         <Trash2 size={18} />
