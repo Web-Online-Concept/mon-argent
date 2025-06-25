@@ -1095,7 +1095,7 @@ const App = () => {
             className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
           >
             <FileText size={20} />
-            Exporter en fichier texte (selon filtres actuels)
+            Exporter en PDF (selon filtres actuels)
           </button>
         </div>
       </div>
