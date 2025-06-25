@@ -505,7 +505,7 @@ const App = () => {
     const [manualType, setManualType] = useState('debit');
 
     return (
-      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)] p-4">
+      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)] p-4 pb-24">
         <h1 className="text-3xl font-bold mb-8">Mon-Argent.pro</h1>
         
         {/* Bouton unique pour transaction vocale */}
@@ -545,14 +545,23 @@ const App = () => {
         />
 
         {/* Publicité */}
-        <div className="mt-8 w-full max-w-md mb-20">
+        <div className="mt-4 sm:mt-8 w-full max-w-md mb-8 sm:mb-20">
           {/* Format desktop */}
           <div className="hidden sm:block">
-            <a href="https://votre-lien-publicitaire.com" target="_blank" rel="noopener noreferrer">
-              <div className="bg-gray-50 border border-gray-300 rounded-lg p-2 text-center">
+            <a href="https://n26.com/r/florentr5832" target="_blank" rel="noopener noreferrer">
+              <div className="bg-gray-50 border border-gray-300 rounded-lg p-2 text-center hover:shadow-lg transition-shadow">
                 <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider">Publicité</p>
-                <div className="bg-gray-200 h-[90px] rounded flex items-center justify-center">
-                  <span className="text-gray-500 text-sm">Espace publicitaire 728x90</span>
+                <div className="bg-gray-200 rounded overflow-hidden" style={{ height: '90px' }}>
+                  <img 
+                    src="/pub-desktop.jpg" 
+                    alt="N26 - La banque mobile" 
+                    className="w-full h-full object-contain"
+                    loading="lazy"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.parentElement.innerHTML = '<div class="flex items-center justify-center h-full text-gray-500">Espace publicitaire 728x90</div>';
+                    }}
+                  />
                 </div>
               </div>
             </a>
@@ -560,11 +569,20 @@ const App = () => {
           
           {/* Format mobile */}
           <div className="sm:hidden">
-            <a href="https://votre-lien-publicitaire.com" target="_blank" rel="noopener noreferrer">
+            <a href="https://n26.com/r/florentr5832" target="_blank" rel="noopener noreferrer">
               <div className="bg-gray-50 border border-gray-300 rounded-lg p-2 text-center">
                 <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider">Publicité</p>
-                <div className="bg-gray-200 h-[100px] rounded flex items-center justify-center">
-                  <span className="text-gray-500 text-sm">Espace publicitaire 320x100</span>
+                <div className="bg-gray-200 rounded overflow-hidden" style={{ height: '100px' }}>
+                  <img 
+                    src="/pub-mobile.jpg" 
+                    alt="N26 - La banque mobile" 
+                    className="w-full h-full object-contain"
+                    loading="lazy"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.parentElement.innerHTML = '<div class="flex items-center justify-center h-full text-gray-500">Espace publicitaire 320x100</div>';
+                    }}
+                  />
                 </div>
               </div>
             </a>
