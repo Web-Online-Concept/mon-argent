@@ -113,6 +113,7 @@ const App = () => {
   // Traiter le transcript quand il change et que l'enregistrement est arrêté
   useEffect(() => {
     if (!isRecording && !isListening && transcript) {
+      console.log('Processing transcript:', transcript, 'Page:', currentPage); // DEBUG
       const timer = setTimeout(() => {
         if (currentPage === 'home') {
           processVoiceTransaction(transcript);
@@ -123,7 +124,7 @@ const App = () => {
       return () => clearTimeout(timer);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isRecording, isListening, transcript]);
+  }, [isRecording, isListening, transcript, currentPage]);
 
   // Chargement des données au démarrage
   useEffect(() => {
@@ -155,13 +156,15 @@ const App = () => {
       setIsRecording(false);
     }
     if (currentPage !== 'assistant') {
+      setTranscript('');
       setIsListening(false);
       setAssistantResponse('');
     }
     if (recognitionRef.current && (isRecording || isListening)) {
       recognitionRef.current.stop();
     }
-  }, [currentPage, isRecording, isListening]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage]);
 
   // Initialisation de la reconnaissance vocale
   useEffect(() => {
@@ -174,7 +177,7 @@ const App = () => {
         recognitionRef.current.lang = 'fr-FR';
 
         recognitionRef.current.onresult = (event) => {
-          // Prendre seulement le dernier résultat pour éviter les répétitions
+          // Prendre seulement le dernier résultat
           const lastResult = event.results[event.results.length - 1];
           if (lastResult.isFinal) {
             setTranscript(lastResult[0].transcript);
@@ -264,6 +267,7 @@ const App = () => {
 
   // Traitement des requêtes de l'assistant
   const processAssistantQuery = (query) => {
+    console.log('Processing assistant query:', query); // DEBUG
     const lowerQuery = query.toLowerCase();
     let response = '';
 
@@ -314,11 +318,12 @@ const App = () => {
 
   // Démarrer l'enregistrement
   const startRecording = () => {
+    console.log('Starting recording on page:', currentPage); // DEBUG
     if (recognitionRef.current) {
-      setIsRecording(true);
       if (currentPage === 'assistant') {
         setIsListening(true);
       }
+      setIsRecording(true);
       try {
         recognitionRef.current.start();
       } catch (error) {
@@ -505,7 +510,13 @@ const App = () => {
         
         {/* Bouton unique pour transaction vocale */}
         <button
-          onClick={() => isRecording ? stopRecording() : startRecording()}
+          onClick={() => {
+            if (isRecording) {
+              stopRecording();
+            } else {
+              startRecording();
+            }
+          }}
           className={`w-full max-w-md py-6 rounded-lg font-semibold text-xl flex items-center justify-center gap-3 transition-all transform mb-8 ${
             isRecording 
               ? 'bg-red-500 text-white scale-95' 
@@ -533,20 +544,31 @@ const App = () => {
           setManualType={setManualType}
         />
 
-        {/* Solde initial avec padding pour éviter que le message ne soit caché */}
-        <div className="mt-6 text-center mb-8">
-          <p className="text-sm text-gray-600 mb-2">Solde initial : {initialBalance.toFixed(2)} €</p>
-          <button
-            onClick={() => {
-              const newBalance = prompt('Définir le solde initial :', initialBalance);
-              if (newBalance !== null && !isNaN(newBalance)) {
-                setInitialBalance(parseFloat(newBalance));
-              }
-            }}
-            className="text-blue-600 hover:text-blue-800 text-sm"
-          >
-            Modifier le solde initial
-          </button>
+        {/* Publicité */}
+        <div className="mt-8 w-full max-w-md mb-20">
+          {/* Format desktop */}
+          <div className="hidden sm:block">
+            <a href="https://votre-lien-publicitaire.com" target="_blank" rel="noopener noreferrer">
+              <div className="bg-gray-50 border border-gray-300 rounded-lg p-2 text-center">
+                <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider">Publicité</p>
+                <div className="bg-gray-200 h-[90px] rounded flex items-center justify-center">
+                  <span className="text-gray-500 text-sm">Espace publicitaire 728x90</span>
+                </div>
+              </div>
+            </a>
+          </div>
+          
+          {/* Format mobile */}
+          <div className="sm:hidden">
+            <a href="https://votre-lien-publicitaire.com" target="_blank" rel="noopener noreferrer">
+              <div className="bg-gray-50 border border-gray-300 rounded-lg p-2 text-center">
+                <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider">Publicité</p>
+                <div className="bg-gray-200 h-[100px] rounded flex items-center justify-center">
+                  <span className="text-gray-500 text-sm">Espace publicitaire 320x100</span>
+                </div>
+              </div>
+            </a>
+          </div>
         </div>
       </div>
     );
@@ -853,7 +875,13 @@ const App = () => {
       
       <div className="w-full max-w-md">
         <button
-          onClick={() => isListening ? stopRecording() : startRecording()}
+          onClick={() => {
+            if (isListening) {
+              stopRecording();
+            } else {
+              startRecording();
+            }
+          }}
           className={`w-full py-8 rounded-full font-semibold text-xl flex items-center justify-center gap-3 transition-all transform ${
             isListening 
               ? 'bg-red-500 text-white scale-95' 
@@ -901,6 +929,28 @@ const App = () => {
   const SettingsPage = () => (
     <div className="p-4 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Paramètres</h1>
+      
+      {/* Section Solde initial */}
+      <div className="bg-white rounded-lg shadow p-6 mb-6">
+        <h2 className="text-xl font-semibold mb-4">Solde initial</h2>
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-gray-600 mb-1">Définir le solde de départ de votre compte</p>
+            <p className="text-2xl font-bold">{initialBalance.toFixed(2)} €</p>
+          </div>
+          <button
+            onClick={() => {
+              const newBalance = prompt('Définir le solde initial :', initialBalance);
+              if (newBalance !== null && !isNaN(newBalance)) {
+                setInitialBalance(parseFloat(newBalance));
+              }
+            }}
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+          >
+            Modifier
+          </button>
+        </div>
+      </div>
       
       {/* Section Import/Export */}
       <div className="bg-white rounded-lg shadow p-6 mb-6">
