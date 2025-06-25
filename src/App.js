@@ -968,9 +968,9 @@ const App = () => {
                     <div className="flex gap-1">
                       <button
                         onClick={() => setEditingTransaction(transaction.id)}
-                        className="text-blue-500 hover:text-blue-700 p-1"
+                        className="text-blue-500 hover:text-blue-700 p-2 hover:bg-blue-50 rounded-lg transition-colors"
                       >
-                        <Edit size={18} />
+                        <Edit size={20} />
                       </button>
                       <button
                         onClick={() => {
@@ -978,9 +978,9 @@ const App = () => {
                             setTransactions(transactions.filter(t => t.id !== transaction.id));
                           }
                         }}
-                        className="text-red-500 hover:text-red-700 p-1"
+                        className="text-red-500 hover:text-red-700 p-2 hover:bg-red-50 rounded-lg transition-colors"
                       >
-                        <Trash2 size={18} />
+                        <Trash2 size={20} />
                       </button>
                     </div>
                   </div>
