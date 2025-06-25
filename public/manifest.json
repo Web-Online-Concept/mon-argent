@@ -1,6 +1,7 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Mon Argent",
+  "name": "Mon-Argent.pro - Gestion budgétaire simple",
+  "description": "Application gratuite pour gérer votre budget facilement avec reconnaissance vocale",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,6 +21,10 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#10b981",
+  "background_color": "#ffffff",
+  "orientation": "portrait",
+  "categories": ["finance", "productivity"],
+  "lang": "fr-FR",
+  "dir": "ltr"
 }
