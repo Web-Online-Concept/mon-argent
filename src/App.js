@@ -110,12 +110,20 @@ const App = () => {
   const recognitionRef = useRef(null);
   const fileInputRef = useRef(null);
   
-  // DEBUG - Afficher l'état de notification
+  // Traiter le transcript quand il change et que l'enregistrement est arrêté
   useEffect(() => {
-    if (notification) {
-      console.log('🔔 NOTIFICATION ACTIVE:', notification);
+    if (!isRecording && !isListening && transcript) {
+      const timer = setTimeout(() => {
+        if (currentPage === 'home') {
+          processVoiceTransaction(transcript);
+        } else if (currentPage === 'assistant') {
+          processAssistantQuery(transcript);
+        }
+      }, 500);
+      return () => clearTimeout(timer);
     }
-  }, [notification]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRecording, isListening, transcript]);
 
   // Chargement des données au démarrage
   useEffect(() => {
@@ -161,16 +169,16 @@ const App = () => {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!recognitionRef.current) {
         recognitionRef.current = new SpeechRecognition();
-        recognitionRef.current.continuous = true;
-        recognitionRef.current.interimResults = true;
+        recognitionRef.current.continuous = false; // Important pour mobile
+        recognitionRef.current.interimResults = false; // Évite les répétitions
         recognitionRef.current.lang = 'fr-FR';
 
         recognitionRef.current.onresult = (event) => {
-          let fullTranscript = '';
-          for (let i = 0; i < event.results.length; i++) {
-            fullTranscript += event.results[i][0].transcript;
+          // Prendre seulement le dernier résultat pour éviter les répétitions
+          const lastResult = event.results[event.results.length - 1];
+          if (lastResult.isFinal) {
+            setTranscript(lastResult[0].transcript);
           }
-          setTranscript(fullTranscript);
         };
 
         recognitionRef.current.onerror = (event) => {
@@ -182,11 +190,8 @@ const App = () => {
         };
 
         recognitionRef.current.onend = () => {
-          if (!isRecording && transcript && currentPage === 'home') {
-            processVoiceTransaction(transcript);
-          } else if (!isListening && transcript && currentPage === 'assistant') {
-            processAssistantQuery(transcript);
-          }
+          setIsRecording(false);
+          setIsListening(false);
         };
       }
     }
@@ -207,7 +212,6 @@ const App = () => {
     
     // Déclencher la notification
     const message = `✓ ${type === 'credit' ? 'Crédit' : 'Débit'} de ${amount}€ enregistré !`;
-    console.log('NOTIFICATION:', message); // DEBUG
     setNotification(message);
     setTimeout(() => setNotification(''), 3000);
   };
@@ -622,11 +626,11 @@ const App = () => {
 
         {/* Filtres */}
         <div className="bg-white rounded-lg shadow p-4 mb-6">
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
             <select
               value={filter.period}
               onChange={(e) => setFilter({...filter, period: e.target.value})}
-              className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">Toutes les périodes</option>
               <option value="today">Aujourd'hui</option>
@@ -639,7 +643,7 @@ const App = () => {
             <select
               value={filter.category}
               onChange={(e) => setFilter({...filter, category: e.target.value})}
-              className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">Toutes les catégories</option>
               {categories.map(cat => (
@@ -746,38 +750,38 @@ const App = () => {
               {editingTransaction === transaction.id ? (
                 // Mode édition
                 <div className="space-y-3">
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2">
                     <input
                       type="text"
                       inputMode="decimal"
                       defaultValue={transaction.amount}
-                      className="w-24 px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full sm:w-24 px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                       id={`amount-${transaction.id}`}
                     />
                     <input
                       type="text"
                       defaultValue={transaction.description}
-                      className="flex-1 px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full flex-1 px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                       id={`desc-${transaction.id}`}
                     />
+                  </div>
+                  <div className="flex flex-col sm:flex-row gap-2">
                     <select
                       defaultValue={transaction.category}
-                      className="px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full sm:w-auto px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                       id={`cat-${transaction.id}`}
                     >
                       {categories.map(cat => (
                         <option key={cat} value={cat}>{cat}</option>
                       ))}
                     </select>
-                  </div>
-                  <div className="flex gap-2 items-center">
                     <input
                       type="date"
                       defaultValue={new Date(transaction.date).toISOString().split('T')[0]}
-                      className="px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full sm:w-auto px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                       id={`date-${transaction.id}`}
                     />
-                    <div className="flex gap-2 ml-auto">
+                    <div className="flex gap-2 sm:ml-auto">
                       <button
                         onClick={() => {
                           const amount = document.getElementById(`amount-${transaction.id}`).value;
@@ -786,13 +790,13 @@ const App = () => {
                           const date = document.getElementById(`date-${transaction.id}`).value;
                           updateTransaction(transaction.id, { amount, description, category, date: new Date(date).toISOString() });
                         }}
-                        className="text-green-600 hover:text-green-800"
+                        className="flex-1 sm:flex-initial text-green-600 hover:text-green-800 bg-green-50 rounded px-3 py-1"
                       >
                         <Check size={20} />
                       </button>
                       <button
                         onClick={() => setEditingTransaction(null)}
-                        className="text-gray-600 hover:text-gray-800"
+                        className="flex-1 sm:flex-initial text-gray-600 hover:text-gray-800 bg-gray-50 rounded px-3 py-1"
                       >
                         <X size={20} />
                       </button>
@@ -801,29 +805,31 @@ const App = () => {
                 </div>
               ) : (
                 // Mode affichage normal
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                   <div className="flex-1">
-                    <p className="font-semibold">{transaction.description}</p>
+                    <p className="font-semibold break-words">{transaction.description}</p>
                     <p className="text-sm text-gray-500">
                       {new Date(transaction.date).toLocaleDateString('fr-FR')} • {transaction.category}
                     </p>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <p className={`text-xl font-semibold ${transaction.type === 'credit' ? 'text-green-600' : 'text-red-600'}`}>
+                  <div className="flex items-center justify-between sm:justify-end gap-2">
+                    <p className={`text-lg sm:text-xl font-semibold ${transaction.type === 'credit' ? 'text-green-600' : 'text-red-600'}`}>
                       {transaction.type === 'credit' ? '+' : '-'}{transaction.amount.toFixed(2)} €
                     </p>
-                    <button
-                      onClick={() => setEditingTransaction(transaction.id)}
-                      className="text-blue-500 hover:text-blue-700"
-                    >
-                      <Edit size={18} />
-                    </button>
-                    <button
-                      onClick={() => setTransactions(transactions.filter(t => t.id !== transaction.id))}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <Trash2 size={18} />
-                    </button>
+                    <div className="flex gap-1">
+                      <button
+                        onClick={() => setEditingTransaction(transaction.id)}
+                        className="text-blue-500 hover:text-blue-700 p-1"
+                      >
+                        <Edit size={18} />
+                      </button>
+                      <button
+                        onClick={() => setTransactions(transactions.filter(t => t.id !== transaction.id))}
+                        className="text-red-500 hover:text-red-700 p-1"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
