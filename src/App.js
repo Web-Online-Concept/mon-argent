@@ -21,7 +21,7 @@ const ManualTransactionForm = ({ categories, addTransaction, manualType, setManu
   };
 
   return (
-    <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6 mb-20">
+    <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6">
       <h2 className="text-xl font-semibold mb-4 text-center">Saisie manuelle</h2>
       
       <form onSubmit={handleSubmit}>
@@ -545,48 +545,34 @@ const App = () => {
         />
 
         {/* Publicité */}
-        <div className="mt-4 sm:mt-8 w-full max-w-md mb-8 sm:mb-20">
-          {/* Format desktop */}
-          <div className="hidden sm:block">
-            <a href="https://n26.com/r/florentr5832" target="_blank" rel="noopener noreferrer">
-              <div className="bg-gray-50 border border-gray-300 rounded-lg p-2 text-center hover:shadow-lg transition-shadow">
-                <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider">Publicité</p>
-                <div className="bg-gray-200 rounded overflow-hidden" style={{ height: '90px' }}>
-                  <img 
-                    src="/pub-desktop.jpg" 
-                    alt="N26 - La banque mobile" 
-                    className="w-full h-full object-contain"
-                    loading="lazy"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                      e.target.parentElement.innerHTML = '<div class="flex items-center justify-center h-full text-gray-500">Espace publicitaire 728x90</div>';
-                    }}
-                  />
-                </div>
-              </div>
-            </a>
-          </div>
-          
-          {/* Format mobile */}
-          <div className="sm:hidden">
-            <a href="https://n26.com/r/florentr5832" target="_blank" rel="noopener noreferrer">
-              <div className="bg-gray-50 border border-gray-300 rounded-lg p-2 text-center">
-                <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider">Publicité</p>
-                <div className="bg-gray-200 rounded overflow-hidden" style={{ height: '100px' }}>
-                  <img 
-                    src="/pub-mobile.jpg" 
-                    alt="N26 - La banque mobile" 
-                    className="w-full h-full object-contain"
-                    loading="lazy"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                      e.target.parentElement.innerHTML = '<div class="flex items-center justify-center h-full text-gray-500">Espace publicitaire 320x100</div>';
-                    }}
-                  />
-                </div>
-              </div>
-            </a>
-          </div>
+        <div className="mt-8 w-full max-w-md mb-8 sm:mb-20">
+          <a href="https://n26.com/r/florentr5832" target="_blank" rel="noopener noreferrer" className="block">
+            {/* Format desktop */}
+            <div className="hidden sm:block w-full h-[90px] bg-gray-100 rounded-lg overflow-hidden">
+              <img 
+                src="/pub-desktop.jpg" 
+                alt="N26 - La banque mobile" 
+                className="w-full h-full object-cover hover:opacity-90 transition-opacity cursor-pointer"
+                loading="lazy"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                }}
+              />
+            </div>
+            
+            {/* Format mobile */}
+            <div className="sm:hidden w-full h-[100px] bg-gray-100 rounded-lg overflow-hidden">
+              <img 
+                src="/pub-mobile.jpg" 
+                alt="N26 - La banque mobile" 
+                className="w-full h-full object-cover cursor-pointer"
+                loading="lazy"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                }}
+              />
+            </div>
+          </a>
         </div>
       </div>
     );
