@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Mic, MicOff, Download, Upload, MessageSquare, Home, History, X, Check, Trash2, Edit, Settings, FileText, HelpCircle } from 'lucide-react';
+import jsPDF from 'jspdf';
 
 // Composant formulaire manuel séparé pour éviter les problèmes de focus
 const ManualTransactionForm = ({ categories, addTransaction, manualType, setManualType }) => {
@@ -396,48 +397,156 @@ const App = () => {
 
   // Export PDF
   const exportPDF = () => {
+    const doc = new jsPDF();
     const filteredTransactions = getFilteredTransactions();
-    let content = `MON-ARGENT.PRO - EXPORT DU ${new Date().toLocaleDateString('fr-FR')}\n\n`;
+    
+    // Couleurs
+    const greenColor = [16, 185, 129];
+    const redColor = [239, 68, 68];
+    const grayColor = [107, 114, 128];
+    
+    // En-tête
+    doc.setFontSize(24);
+    doc.setTextColor(...greenColor);
+    doc.text('Mon-Argent.pro', 105, 20, { align: 'center' });
+    
+    doc.setFontSize(12);
+    doc.setTextColor(...grayColor);
+    doc.text(`Export du ${new Date().toLocaleDateString('fr-FR')}`, 105, 30, { align: 'center' });
+    
+    // Ligne de séparation
+    doc.setDrawColor(...grayColor);
+    doc.line(20, 35, 190, 35);
     
     // Calculs globaux
     const allCredits = transactions.filter(t => t.type === 'credit').reduce((sum, t) => sum + t.amount, 0);
     const allDebits = transactions.filter(t => t.type === 'debit').reduce((sum, t) => sum + t.amount, 0);
     const totalBalance = initialBalance + allCredits - allDebits;
     
-    content += `SOLDE TOTAL DU COMPTE: ${totalBalance.toFixed(2)} €\n`;
-    content += `(Solde initial: ${initialBalance.toFixed(2)} € + Crédits: ${allCredits.toFixed(2)} € - Débits: ${allDebits.toFixed(2)} €)\n\n`;
+    // Solde total
+    doc.setFontSize(16);
+    doc.setTextColor(0, 0, 0);
+    doc.text('SOLDE TOTAL DU COMPTE', 20, 50);
+    doc.setFontSize(20);
+    doc.setTextColor(totalBalance >= 0 ? greenColor[0] : redColor[0], 
+                     totalBalance >= 0 ? greenColor[1] : redColor[1], 
+                     totalBalance >= 0 ? greenColor[2] : redColor[2]);
+    doc.text(`${totalBalance.toFixed(2)} €`, 190, 50, { align: 'right' });
     
-    if (filter.period === 'custom' && filter.startDate && filter.endDate) {
-      content += `PÉRIODE SÉLECTIONNÉE: Du ${new Date(filter.startDate).toLocaleDateString('fr-FR')} au ${new Date(filter.endDate).toLocaleDateString('fr-FR')}\n`;
-    } else if (filter.period !== 'all') {
-      content += `PÉRIODE SÉLECTIONNÉE: ${filter.period === 'today' ? "Aujourd'hui" : filter.period === 'week' ? 'Cette semaine' : filter.period === 'month' ? 'Ce mois' : 'Cette année'}\n`;
-    }
+    // Détails du solde
+    doc.setFontSize(10);
+    doc.setTextColor(...grayColor);
+    doc.text(`Solde initial: ${initialBalance.toFixed(2)} € | Crédits: +${allCredits.toFixed(2)} € | Débits: -${allDebits.toFixed(2)} €`, 20, 58);
     
-    const credits = filteredTransactions.filter(t => t.type === 'credit').reduce((sum, t) => sum + t.amount, 0);
-    const debits = filteredTransactions.filter(t => t.type === 'debit').reduce((sum, t) => sum + t.amount, 0);
-    
+    // Période sélectionnée
+    let yPosition = 70;
     if (filter.period !== 'all') {
-      content += `\nRÉSUMÉ DE LA PÉRIODE:\n`;
-      content += `Crédits période: +${credits.toFixed(2)} €\n`;
-      content += `Débits période: -${debits.toFixed(2)} €\n`;
-      content += `Solde période: ${(credits - debits).toFixed(2)} €\n\n`;
+      doc.setFontSize(12);
+      doc.setTextColor(0, 0, 0);
+      let periodText = '';
+      if (filter.period === 'custom' && filter.startDate && filter.endDate) {
+        periodText = `Du ${new Date(filter.startDate).toLocaleDateString('fr-FR')} au ${new Date(filter.endDate).toLocaleDateString('fr-FR')}`;
+      } else {
+        periodText = filter.period === 'today' ? "Aujourd'hui" : 
+                     filter.period === 'week' ? 'Cette semaine' : 
+                     filter.period === 'month' ? 'Ce mois' : 'Cette année';
+      }
+      doc.text(`Période: ${periodText}`, 20, yPosition);
+      
+      // Résumé de la période
+      const credits = filteredTransactions.filter(t => t.type === 'credit').reduce((sum, t) => sum + t.amount, 0);
+      const debits = filteredTransactions.filter(t => t.type === 'debit').reduce((sum, t) => sum + t.amount, 0);
+      
+      yPosition += 8;
+      doc.setFontSize(10);
+      doc.setTextColor(...greenColor);
+      doc.text(`Crédits: +${credits.toFixed(2)} €`, 20, yPosition);
+      doc.setTextColor(...redColor);
+      doc.text(`Débits: -${debits.toFixed(2)} €`, 80, yPosition);
+      doc.setTextColor(0, 0, 0);
+      doc.text(`Solde période: ${(credits - debits).toFixed(2)} €`, 140, yPosition);
+      
+      yPosition += 10;
     }
     
-    content += `TRANSACTIONS (${filteredTransactions.length}):\n`;
-    content += `=====================================\n`;
+    // Ligne de séparation
+    doc.setDrawColor(...grayColor);
+    doc.line(20, yPosition, 190, yPosition);
+    yPosition += 10;
+    
+    // Titre des transactions
+    doc.setFontSize(14);
+    doc.setTextColor(0, 0, 0);
+    doc.text(`TRANSACTIONS (${filteredTransactions.length})`, 20, yPosition);
+    yPosition += 10;
+    
+    // En-têtes du tableau
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'bold');
+    doc.text('Date', 20, yPosition);
+    doc.text('Description', 45, yPosition);
+    doc.text('Catégorie', 110, yPosition);
+    doc.text('Montant', 190, yPosition, { align: 'right' });
+    
+    // Ligne sous les en-têtes
+    yPosition += 2;
+    doc.line(20, yPosition, 190, yPosition);
+    yPosition += 5;
+    
+    // Transactions
+    doc.setFont(undefined, 'normal');
     filteredTransactions.forEach(t => {
-      content += `${new Date(t.date).toLocaleDateString('fr-FR')} | ${t.description} | ${t.category} | ${t.type === 'credit' ? '+' : '-'}${t.amount.toFixed(2)} €\n`;
+      // Vérifier si on a besoin d'une nouvelle page
+      if (yPosition > 270) {
+        doc.addPage();
+        yPosition = 20;
+        
+        // Ré-afficher les en-têtes sur la nouvelle page
+        doc.setFont(undefined, 'bold');
+        doc.text('Date', 20, yPosition);
+        doc.text('Description', 45, yPosition);
+        doc.text('Catégorie', 110, yPosition);
+        doc.text('Montant', 190, yPosition, { align: 'right' });
+        yPosition += 2;
+        doc.line(20, yPosition, 190, yPosition);
+        yPosition += 5;
+        doc.setFont(undefined, 'normal');
+      }
+      
+      doc.setTextColor(...grayColor);
+      doc.text(new Date(t.date).toLocaleDateString('fr-FR'), 20, yPosition);
+      
+      doc.setTextColor(0, 0, 0);
+      // Tronquer la description si trop longue
+      const maxDescLength = 30;
+      const description = t.description.length > maxDescLength 
+        ? t.description.substring(0, maxDescLength) + '...' 
+        : t.description;
+      doc.text(description, 45, yPosition);
+      
+      doc.setTextColor(...grayColor);
+      doc.text(t.category, 110, yPosition);
+      
+      doc.setTextColor(t.type === 'credit' ? greenColor[0] : redColor[0],
+                       t.type === 'credit' ? greenColor[1] : redColor[1],
+                       t.type === 'credit' ? greenColor[2] : redColor[2]);
+      doc.text(`${t.type === 'credit' ? '+' : '-'}${t.amount.toFixed(2)} €`, 190, yPosition, { align: 'right' });
+      
+      yPosition += 7;
     });
     
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `mon-argent-export-${new Date().toISOString().split('T')[0]}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    // Pied de page sur la dernière page
+    const pageCount = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFontSize(8);
+      doc.setTextColor(...grayColor);
+      doc.text(`Page ${i}/${pageCount}`, 105, 290, { align: 'center' });
+      doc.text('Mon-Argent.pro - Application gratuite de gestion budgétaire', 105, 295, { align: 'center' });
+    }
+    
+    // Sauvegarder le PDF
+    doc.save(`mon-argent-export-${new Date().toISOString().split('T')[0]}.pdf`);
   };
 
   // Partage sur les réseaux sociaux
@@ -986,7 +1095,7 @@ const App = () => {
             className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
           >
             <FileText size={20} />
-            Exporter en PDF (selon filtres actuels)
+            Exporter en fichier texte (selon filtres actuels)
           </button>
         </div>
       </div>
