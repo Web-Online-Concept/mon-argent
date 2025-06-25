@@ -884,39 +884,51 @@ const App = () => {
             <div key={transaction.id} className="bg-white rounded-lg shadow p-4">
               {editingTransaction === transaction.id ? (
                 // Mode édition
-                <div className="space-y-3">
-                  <div className="flex flex-col sm:flex-row gap-2">
-                    <input
-                      type="text"
-                      inputMode="decimal"
-                      defaultValue={transaction.amount}
-                      className="w-full sm:w-24 px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                      id={`amount-${transaction.id}`}
-                    />
-                    <input
-                      type="text"
-                      defaultValue={transaction.description}
-                      className="w-full flex-1 px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                      id={`desc-${transaction.id}`}
-                    />
+                <div className="space-y-4">
+                  <div className="flex flex-col gap-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Montant (€)</label>
+                      <input
+                        type="text"
+                        inputMode="decimal"
+                        defaultValue={transaction.amount}
+                        className="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
+                        id={`amount-${transaction.id}`}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                      <input
+                        type="text"
+                        defaultValue={transaction.description}
+                        className="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
+                        id={`desc-${transaction.id}`}
+                      />
+                    </div>
                   </div>
-                  <div className="flex flex-col sm:flex-row gap-2">
-                    <select
-                      defaultValue={transaction.category}
-                      className="w-full sm:w-auto px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                      id={`cat-${transaction.id}`}
-                    >
-                      {categories.map(cat => (
-                        <option key={cat} value={cat}>{cat}</option>
-                      ))}
-                    </select>
-                    <input
-                      type="date"
-                      defaultValue={new Date(transaction.date).toISOString().split('T')[0]}
-                      className="w-full sm:w-auto px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                      id={`date-${transaction.id}`}
-                    />
-                    <div className="flex gap-2 sm:ml-auto">
+                  <div className="flex flex-col gap-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Catégorie</label>
+                      <select
+                        defaultValue={transaction.category}
+                        className="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base bg-white"
+                        id={`cat-${transaction.id}`}
+                      >
+                        {categories.map(cat => (
+                          <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                      <input
+                        type="date"
+                        defaultValue={new Date(transaction.date).toISOString().split('T')[0]}
+                        className="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
+                        id={`date-${transaction.id}`}
+                      />
+                    </div>
+                    <div className="flex gap-3 mt-2">
                       <button
                         onClick={() => {
                           const amount = document.getElementById(`amount-${transaction.id}`).value;
@@ -925,15 +937,17 @@ const App = () => {
                           const date = document.getElementById(`date-${transaction.id}`).value;
                           updateTransaction(transaction.id, { amount, description, category, date: new Date(date).toISOString() });
                         }}
-                        className="flex-1 sm:flex-initial text-green-600 hover:text-green-800 bg-green-50 rounded px-3 py-1"
+                        className="flex-1 flex items-center justify-center gap-2 text-white bg-green-600 hover:bg-green-700 rounded-lg px-4 py-3 font-semibold text-base"
                       >
-                        <Check size={20} />
+                        <Check size={24} />
+                        Valider
                       </button>
                       <button
                         onClick={() => setEditingTransaction(null)}
-                        className="flex-1 sm:flex-initial text-gray-600 hover:text-gray-800 bg-gray-50 rounded px-3 py-1"
+                        className="flex-1 flex items-center justify-center gap-2 text-white bg-gray-600 hover:bg-gray-700 rounded-lg px-4 py-3 font-semibold text-base"
                       >
-                        <X size={20} />
+                        <X size={24} />
+                        Annuler
                       </button>
                     </div>
                   </div>
