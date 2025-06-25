@@ -1,3 +1,22 @@
-# https://www.robotstxt.org/robotstxt.html
+# Robots.txt pour Mon-Argent.pro
+# Permet l'indexation complète du site
+
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://mon-argent.pro/sitemap.xml
+
+# Crawl-delay pour éviter la surcharge
+Crawl-delay: 1
+
+# Bloque les mauvais bots connus
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: SemrushBot
+Crawl-delay: 10

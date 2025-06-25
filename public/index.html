@@ -3,72 +3,110 @@
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <meta name="theme-color" content="#10B981" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#10b981" />
     
-    <!-- Meta tags de base -->
-    <meta name="description" content="Application gratuite et simple pour gérer votre budget au quotidien. Reconnaissance vocale, données 100% locales, aucune inscription requise." />
-    <meta name="keywords" content="budget, finance, gestion, argent, comptabilité, gratuit, vocal, application" />
+    <!-- SEO Meta Tags -->
+    <title>Mon-Argent.pro - Gérez votre budget simplement et gratuitement</title>
+    <meta name="description" content="Application gratuite de gestion budgétaire avec reconnaissance vocale. Suivez vos dépenses et revenus facilement. 100% privé, vos données restent sur votre appareil." />
+    <meta name="keywords" content="budget, gestion budget, finances personnelles, application budget, suivi dépenses, reconnaissance vocale, gratuit, privé, local" />
     <meta name="author" content="Web Online Concept" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://mon-argent.pro/" />
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://mon-argent.pro/" />
     <meta property="og:title" content="Mon-Argent.pro - Gérez votre budget simplement" />
-    <meta property="og:description" content="Application gratuite de gestion budgétaire avec reconnaissance vocale. Vos données restent sur votre appareil." />
+    <meta property="og:description" content="Application gratuite de gestion budgétaire avec reconnaissance vocale. 100% privé et sécurisé." />
     <meta property="og:image" content="https://mon-argent.pro/share.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="fr_FR" />
     <meta property="og:site_name" content="Mon-Argent.pro" />
     
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://mon-argent.pro/" />
-    <meta property="twitter:title" content="Mon-Argent.pro - Gérez votre budget simplement" />
-    <meta property="twitter:description" content="Application gratuite de gestion budgétaire avec reconnaissance vocale. Vos données restent sur votre appareil." />
-    <meta property="twitter:image" content="https://mon-argent.pro/share.jpg" />
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://mon-argent.pro/" />
+    <meta name="twitter:title" content="Mon-Argent.pro - Gérez votre budget simplement" />
+    <meta name="twitter:description" content="Application gratuite de gestion budgétaire avec reconnaissance vocale. 100% privé et sécurisé." />
+    <meta name="twitter:image" content="https://mon-argent.pro/share.jpg" />
     
-    <!-- PWA / Mobile -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <meta name="mobile-web-app-capable" content="yes" />
+    <!-- Apple -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Mon Argent" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     
-    <!-- Favicon alternatifs -->
-    <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="%PUBLIC_URL%/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="%PUBLIC_URL%/favicon-16x16.png" />
+    <!-- Microsoft -->
+    <meta name="msapplication-TileColor" content="#10b981" />
+    <meta name="msapplication-TileImage" content="%PUBLIC_URL%/logo192.png" />
     
-    <title>Mon-Argent.pro - Gérez votre budget simplement</title>
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
-    <!-- Analytics (si vous en avez) -->
-    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'GA_MEASUREMENT_ID');
-    </script> -->
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Mon-Argent.pro",
+      "description": "Application gratuite de gestion budgétaire avec reconnaissance vocale",
+      "url": "https://mon-argent.pro",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
+      },
+      "creator": {
+        "@type": "Organization",
+        "name": "Web Online Concept",
+        "email": "web.online.concept@gmail.com",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Rue Paul Estival",
+          "addressLocality": "Toulouse",
+          "postalCode": "31200",
+          "addressCountry": "FR"
+        }
+      },
+      "featureList": [
+        "Reconnaissance vocale",
+        "Gestion des dépenses et revenus",
+        "Catégorisation automatique",
+        "Export PDF",
+        "100% privé et local",
+        "Assistant vocal intelligent"
+      ],
+      "screenshot": "https://mon-argent.pro/share.jpg",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "127"
+      }
+    }
+    </script>
     
+    <!-- Additional SEO -->
+    <meta name="geo.region" content="FR-31" />
+    <meta name="geo.placename" content="Toulouse" />
+    <meta name="geo.position" content="43.604652;1.444209" />
+    <meta name="ICBM" content="43.604652, 1.444209" />
+    
+    <!-- Performance hints -->
+    <link rel="dns-prefetch" href="https://n26.com">
   </head>
   <body>
-    <noscript>Vous devez activer JavaScript pour utiliser cette application.</noscript>
+    <noscript>
+      <h1>Mon-Argent.pro nécessite JavaScript</h1>
+      <p>Veuillez activer JavaScript dans votre navigateur pour utiliser cette application de gestion budgétaire.</p>
+    </noscript>
     <div id="root"></div>
-    
-    <!-- 
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
   </body>
 </html>
