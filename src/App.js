@@ -1081,6 +1081,43 @@ const App = () => {
           </p>
         </div>
 
+        <div className="bg-red-50 rounded-lg shadow p-6 border-2 border-red-200">
+          <h2 className="text-xl font-semibold mb-3 text-red-700 flex items-center gap-2">
+            🔒 Sécurité et Confidentialité
+          </h2>
+          <div className="space-y-3 text-gray-700">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">🛡️</span>
+              <div>
+                <p className="font-semibold text-red-700">Vos données sont 100% privées !</p>
+                <p className="text-sm mt-1">Nous n'avons accès à AUCUNE de vos informations personnelles ou financières.</p>
+              </div>
+            </div>
+            
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">💾</span>
+              <div>
+                <p className="font-semibold">Stockage local uniquement</p>
+                <p className="text-sm mt-1">Toutes vos transactions restent sur VOTRE appareil. Rien n'est envoyé sur internet.</p>
+              </div>
+            </div>
+            
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">🔐</span>
+              <div>
+                <p className="font-semibold">Vous gardez le contrôle total</p>
+                <p className="text-sm mt-1">Exportez, supprimez ou modifiez vos données à tout moment. C'est VOTRE argent, VOS données.</p>
+              </div>
+            </div>
+            
+            <div className="p-3 bg-green-50 border border-green-300 rounded-lg mt-4">
+              <p className="text-sm text-green-800 font-medium">
+                ✅ En résumé : C'est comme avoir un carnet de comptes dans votre poche, personne d'autre que vous ne peut le consulter !
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-xl font-semibold mb-3 text-blue-600">🏠 Page d'Accueil</h2>
           <div className="space-y-3 text-gray-700">
@@ -1133,6 +1170,7 @@ const App = () => {
             <li>• Vos données ne quittent jamais votre appareil</li>
             <li>• Exportez régulièrement vos données pour les sauvegarder</li>
             <li>• Utilisez des mots-clés pour la détection automatique des catégories</li>
+            <li>• Ajoutez l'app à votre écran d'accueil pour un accès rapide</li>
           </ul>
         </div>
       </div>
@@ -1252,7 +1290,7 @@ const App = () => {
       >
         ← Retour aux paramètres
       </button>
-      <h1 className="text-2xl font-bold mb-6">Mentions Légales</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center">Mentions Légales</h1>
       <div className="bg-white rounded-lg shadow p-6 space-y-4">
         <h2 className="text-xl font-semibold">Éditeur du site</h2>
         <div className="ml-4">
