@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Mic, MicOff, Download, Upload, MessageSquare, Home, History, X, Check, Trash2, Edit, Settings, FileText, HelpCircle } from 'lucide-react';
+import { Mic, MicOff, Download, Upload, TrendingUp, Home, History, X, Check, Trash2, Edit, Settings, FileText, HelpCircle } from 'lucide-react';
 
 // Composant formulaire manuel séparé pour éviter les problèmes de focus
 const ManualTransactionForm = ({ categories, addTransaction, manualType, setManualType }) => {
@@ -98,12 +98,10 @@ const App = () => {
   const [transactions, setTransactions] = useState([]);
   const [categories, setCategories] = useState(['Courses', 'Transport', 'Loisirs', 'Santé', 'Logement', 'Autres']);
   const [isRecording, setIsRecording] = useState(false);
-  const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [filter, setFilter] = useState({ period: 'all', category: 'all', startDate: '', endDate: '' });
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [newCategory, setNewCategory] = useState('');
-  const [assistantResponse, setAssistantResponse] = useState('');
   const [editingTransaction, setEditingTransaction] = useState(null);
   const [initialBalance, setInitialBalance] = useState(0);
   const [notification, setNotification] = useState('');
@@ -112,19 +110,15 @@ const App = () => {
   
   // Traiter le transcript quand il change et que l'enregistrement est arrêté
   useEffect(() => {
-    if (!isRecording && !isListening && transcript) {
+    if (!isRecording && transcript && currentPage === 'home') {
       console.log('Processing transcript:', transcript, 'Page:', currentPage); // DEBUG
       const timer = setTimeout(() => {
-        if (currentPage === 'home') {
-          processVoiceTransaction(transcript);
-        } else if (currentPage === 'assistant') {
-          processAssistantQuery(transcript);
-        }
+        processVoiceTransaction(transcript);
       }, 500);
       return () => clearTimeout(timer);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isRecording, isListening, transcript, currentPage]);
+  }, [isRecording, transcript, currentPage]);
 
   // Chargement des données au démarrage
   useEffect(() => {
@@ -155,12 +149,7 @@ const App = () => {
       setTranscript('');
       setIsRecording(false);
     }
-    if (currentPage !== 'assistant') {
-      setTranscript('');
-      setIsListening(false);
-      setAssistantResponse('');
-    }
-    if (recognitionRef.current && (isRecording || isListening)) {
+    if (recognitionRef.current && isRecording) {
       recognitionRef.current.stop();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -188,13 +177,11 @@ const App = () => {
           console.error('Erreur de reconnaissance vocale:', event.error);
           if (event.error !== 'no-speech') {
             setIsRecording(false);
-            setIsListening(false);
           }
         };
 
         recognitionRef.current.onend = () => {
           setIsRecording(false);
-          setIsListening(false);
         };
       }
     }
@@ -265,64 +252,10 @@ const App = () => {
     setTranscript('');
   };
 
-  // Traitement des requêtes de l'assistant
-  const processAssistantQuery = (query) => {
-    console.log('Processing assistant query:', query); // DEBUG
-    const lowerQuery = query.toLowerCase();
-    let response = '';
-
-    if (lowerQuery.includes('dépensé') || lowerQuery.includes('débit')) {
-      const now = new Date();
-      let filteredTransactions = transactions.filter(t => t.type === 'debit');
-
-      if (lowerQuery.includes('aujourd\'hui')) {
-        filteredTransactions = filteredTransactions.filter(t => {
-          const tDate = new Date(t.date);
-          return tDate.toDateString() === now.toDateString();
-        });
-      } else if (lowerQuery.includes('3 derniers jours')) {
-        const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
-        filteredTransactions = filteredTransactions.filter(t => new Date(t.date) >= threeDaysAgo);
-      } else if (lowerQuery.includes('semaine')) {
-        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-        filteredTransactions = filteredTransactions.filter(t => new Date(t.date) >= weekAgo);
-      } else if (lowerQuery.includes('mois')) {
-        const monthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
-        filteredTransactions = filteredTransactions.filter(t => new Date(t.date) >= monthAgo);
-      }
-
-      const total = filteredTransactions.reduce((sum, t) => sum + t.amount, 0);
-      response = `Vous avez dépensé ${total.toFixed(2)} € en ${filteredTransactions.length} transactions. `;
-      
-      if (filteredTransactions.length > 0) {
-        response += 'Voici le détail : ';
-        filteredTransactions.slice(0, 5).forEach(t => {
-          response += `${t.amount} € pour ${t.description}, `;
-        });
-      }
-    } else if (lowerQuery.includes('solde') || lowerQuery.includes('total')) {
-      const credits = transactions.filter(t => t.type === 'credit').reduce((sum, t) => sum + t.amount, 0);
-      const debits = transactions.filter(t => t.type === 'debit').reduce((sum, t) => sum + t.amount, 0);
-      const balance = initialBalance + credits - debits;
-      response = `Votre solde total est de ${balance.toFixed(2)} €. Vous aviez un solde initial de ${initialBalance.toFixed(2)} €, avec ${credits.toFixed(2)} € de crédits et ${debits.toFixed(2)} € de débits.`;
-    } else {
-      response = 'Je peux vous aider avec vos dépenses, votre solde, ou l\'historique de vos transactions. Que souhaitez-vous savoir ?';
-    }
-
-    setAssistantResponse(response);
-    
-    const utterance = new SpeechSynthesisUtterance(response);
-    utterance.lang = 'fr-FR';
-    window.speechSynthesis.speak(utterance);
-  };
-
   // Démarrer l'enregistrement
   const startRecording = () => {
     console.log('Starting recording on page:', currentPage); // DEBUG
     if (recognitionRef.current) {
-      if (currentPage === 'assistant') {
-        setIsListening(true);
-      }
       setIsRecording(true);
       try {
         recognitionRef.current.start();
@@ -336,7 +269,6 @@ const App = () => {
   const stopRecording = () => {
     if (recognitionRef.current) {
       setIsRecording(false);
-      setIsListening(false);
       try {
         recognitionRef.current.stop();
       } catch (error) {
@@ -1013,62 +945,214 @@ const App = () => {
     );
   };
 
-  // Page assistant
-  const AssistantPage = () => (
-    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)] p-4">
-      <h1 className="text-2xl font-bold mb-8 text-center">Assistant Vocal</h1>
+  // Page Statistiques
+  const StatsPage = () => {
+    // Calculs pour les statistiques
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    
+    // Transactions du mois en cours
+    const currentMonthTransactions = transactions.filter(t => {
+      const tDate = new Date(t.date);
+      return tDate.getMonth() === currentMonth && tDate.getFullYear() === currentYear;
+    });
+    
+    // Transactions du mois précédent
+    const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+    const lastMonthYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+    const lastMonthTransactions = transactions.filter(t => {
+      const tDate = new Date(t.date);
+      return tDate.getMonth() === lastMonth && tDate.getFullYear() === lastMonthYear;
+    });
+    
+    // Dépenses par catégorie (mois en cours)
+    const expensesByCategory = {};
+    currentMonthTransactions.filter(t => t.type === 'debit').forEach(t => {
+      expensesByCategory[t.category] = (expensesByCategory[t.category] || 0) + t.amount;
+    });
+    
+    // Tri des catégories par montant décroissant
+    const sortedCategories = Object.entries(expensesByCategory)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5); // Top 5
+    
+    // Total des dépenses et revenus
+    const currentMonthDebits = currentMonthTransactions
+      .filter(t => t.type === 'debit')
+      .reduce((sum, t) => sum + t.amount, 0);
+    
+    const currentMonthCredits = currentMonthTransactions
+      .filter(t => t.type === 'credit')
+      .reduce((sum, t) => sum + t.amount, 0);
+    
+    const lastMonthDebits = lastMonthTransactions
+      .filter(t => t.type === 'debit')
+      .reduce((sum, t) => sum + t.amount, 0);
+    
+    // Moyenne quotidienne
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const daysPassed = now.getDate();
+    const dailyAverage = currentMonthDebits / daysPassed;
+    const projectedMonthly = dailyAverage * daysInMonth;
+    
+    // Top 5 dépenses du mois
+    const topExpenses = currentMonthTransactions
+      .filter(t => t.type === 'debit')
+      .sort((a, b) => b.amount - a.amount)
+      .slice(0, 5);
+    
+    // Évolution sur 6 mois
+    const last6Months = [];
+    for (let i = 5; i >= 0; i--) {
+      const month = new Date(currentYear, currentMonth - i, 1);
+      const monthTransactions = transactions.filter(t => {
+        const tDate = new Date(t.date);
+        return tDate.getMonth() === month.getMonth() && 
+               tDate.getFullYear() === month.getFullYear();
+      });
+      const monthDebits = monthTransactions
+        .filter(t => t.type === 'debit')
+        .reduce((sum, t) => sum + t.amount, 0);
       
-      <div className="w-full max-w-md">
-        <button
-          onClick={() => {
-            if (isListening) {
-              stopRecording();
-            } else {
-              startRecording();
-            }
-          }}
-          className={`w-full py-8 rounded-full font-semibold text-xl flex items-center justify-center gap-3 transition-all transform ${
-            isListening 
-              ? 'bg-red-500 text-white scale-95' 
-              : 'bg-blue-500 text-white hover:scale-105'
-          }`}
-        >
-          {isListening ? (
-            <>
-              <MicOff size={32} />
-              Arrêter l'écoute
-            </>
-          ) : (
-            <>
-              <Mic size={32} />
-              Poser une question
-            </>
-          )}
-        </button>
+      last6Months.push({
+        month: month.toLocaleDateString('fr-FR', { month: 'short' }),
+        amount: monthDebits
+      });
+    }
+    
+    // Calcul du max pour l'échelle
+    const maxCategory = sortedCategories.length > 0 ? sortedCategories[0][1] : 1;
+    const maxMonth = Math.max(...last6Months.map(m => m.amount), 1);
+
+    return (
+      <div className="p-4 max-w-4xl mx-auto">
+        <h1 className="text-2xl font-bold mb-6 text-center">Statistiques</h1>
         
-        {transcript && (
-          <div className="mt-6 p-4 bg-gray-100 rounded-lg">
-            <p className="text-sm text-gray-600 mb-1">Votre question :</p>
-            <p className="font-semibold">{transcript}</p>
+        {/* Résumé du mois */}
+        <div className="bg-white rounded-lg shadow p-6 mb-6">
+          <h2 className="text-lg font-semibold mb-4">
+            {now.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
+          </h2>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="text-center">
+              <p className="text-sm text-gray-600">Dépenses</p>
+              <p className="text-2xl font-bold text-red-600">-{currentMonthDebits.toFixed(2)}€</p>
+            </div>
+            <div className="text-center">
+              <p className="text-sm text-gray-600">Revenus</p>
+              <p className="text-2xl font-bold text-green-600">+{currentMonthCredits.toFixed(2)}€</p>
+            </div>
           </div>
-        )}
-        
-        {assistantResponse && (
-          <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-            <p className="text-sm text-blue-600 mb-1">Réponse :</p>
-            <p className="text-gray-800">{assistantResponse}</p>
+          
+          {/* Comparaison avec le mois précédent */}
+          <div className="mt-4 pt-4 border-t">
+            <p className="text-sm text-gray-600 mb-2">Vs mois dernier</p>
+            <div className="flex items-center justify-between">
+              <span className="text-sm">Dépenses {lastMonth === 11 ? 'déc.' : new Date(2024, lastMonth).toLocaleDateString('fr-FR', { month: 'short' })}</span>
+              <span className="text-sm font-medium">{lastMonthDebits.toFixed(2)}€</span>
+            </div>
+            <div className="flex items-center justify-between mt-1">
+              <span className="text-sm font-medium">Différence</span>
+              <span className={`text-sm font-bold ${currentMonthDebits > lastMonthDebits ? 'text-red-600' : 'text-green-600'}`}>
+                {currentMonthDebits > lastMonthDebits ? '+' : ''}{(currentMonthDebits - lastMonthDebits).toFixed(2)}€
+              </span>
+            </div>
           </div>
-        )}
-        
-        <div className="mt-8 text-center text-gray-500 text-sm">
-          <p>Exemples de questions :</p>
-          <p className="mt-2">"Combien j'ai dépensé ces 3 derniers jours ?"</p>
-          <p>"Quel est mon solde actuel ?"</p>
-          <p>"Combien j'ai dépensé en courses ce mois ?"</p>
         </div>
+
+        {/* Moyenne quotidienne et projection */}
+        <div className="bg-white rounded-lg shadow p-6 mb-6">
+          <h2 className="text-lg font-semibold mb-4">Analyse quotidienne</h2>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-sm text-gray-600">Moyenne/jour</p>
+              <p className="text-xl font-bold">{dailyAverage.toFixed(2)}€</p>
+              <p className="text-xs text-gray-500">sur {daysPassed} jours</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-600">Projection fin de mois</p>
+              <p className="text-xl font-bold text-orange-600">{projectedMonthly.toFixed(2)}€</p>
+              <p className="text-xs text-gray-500">{daysInMonth - daysPassed} jours restants</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Dépenses par catégorie */}
+        {sortedCategories.length > 0 && (
+          <div className="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 className="text-lg font-semibold mb-4">Top catégories du mois</h2>
+            <div className="space-y-3">
+              {sortedCategories.map(([category, amount]) => (
+                <div key={category}>
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-sm font-medium">{category}</span>
+                    <span className="text-sm font-bold">{amount.toFixed(2)}€</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-6">
+                    <div 
+                      className="bg-blue-500 h-6 rounded-full flex items-center justify-end pr-2"
+                      style={{ width: `${(amount / maxCategory) * 100}%` }}
+                    >
+                      <span className="text-xs text-white font-medium">
+                        {((amount / currentMonthDebits) * 100).toFixed(0)}%
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Évolution sur 6 mois */}
+        <div className="bg-white rounded-lg shadow p-6 mb-6">
+          <h2 className="text-lg font-semibold mb-4">Évolution des dépenses</h2>
+          <div className="flex items-end justify-between h-32 mb-2">
+            {last6Months.map((month, index) => (
+              <div key={index} className="flex-1 flex flex-col items-center">
+                <div className="w-full px-1">
+                  <div 
+                    className="rounded-t mx-auto transition-all duration-300"
+                    style={{ 
+                      height: `${(month.amount / maxMonth) * 100}px`,
+                      width: '85%',
+                      backgroundColor: index === 5 ? '#ef4444' : '#9ca3af'
+                    }}
+                  ></div>
+                </div>
+                <span className="text-xs mt-1">{month.month}</span>
+              </div>
+            ))}
+          </div>
+          <div className="text-center text-xs text-gray-500">
+            Moyenne: {(last6Months.reduce((sum, m) => sum + m.amount, 0) / 6).toFixed(2)}€/mois
+          </div>
+        </div>
+
+        {/* Top 5 dépenses */}
+        {topExpenses.length > 0 && (
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-lg font-semibold mb-4">Top 5 dépenses du mois</h2>
+            <div className="space-y-3">
+              {topExpenses.map((t, index) => (
+                <div key={t.id} className="flex items-center justify-between py-2 border-b last:border-0">
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg font-bold text-gray-400">#{index + 1}</span>
+                    <div>
+                      <p className="font-medium text-sm">{t.description}</p>
+                      <p className="text-xs text-gray-500">{new Date(t.date).toLocaleDateString('fr-FR')}</p>
+                    </div>
+                  </div>
+                  <span className="text-red-600 font-bold">{t.amount.toFixed(2)}€</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
-    </div>
-  );
+    );
+  };
 
   // Page Paramètres
   const SettingsPage = () => (
@@ -1269,7 +1353,6 @@ const App = () => {
               <li>"25 euros essence" → Débit automatique</li>
             </ul>
             <p className="mt-3"><strong>Saisie manuelle :</strong> Remplissez les champs et validez.</p>
-            <p><strong>Solde initial :</strong> Définissez votre solde de départ pour un suivi précis.</p>
           </div>
         </div>
 
@@ -1284,13 +1367,15 @@ const App = () => {
         </div>
 
         <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-3 text-orange-600">🤖 Assistant Vocal</h2>
+          <h2 className="text-xl font-semibold mb-3 text-purple-600">📊 Statistiques</h2>
           <div className="space-y-3 text-gray-700">
-            <p>Posez des questions sur vos finances :</p>
+            <p>Analysez vos finances en détail :</p>
             <ul className="list-disc list-inside ml-4 space-y-1">
-              <li>"Combien j'ai dépensé aujourd'hui ?"</li>
-              <li>"Quel est mon solde ?"</li>
-              <li>"Mes dépenses de la semaine ?"</li>
+              <li>Évolution mensuelle des dépenses</li>
+              <li>Top 5 des catégories</li>
+              <li>Moyenne quotidienne</li>
+              <li>Comparaison avec le mois précédent</li>
+              <li>Projection de fin de mois</li>
             </ul>
           </div>
         </div>
@@ -1298,6 +1383,7 @@ const App = () => {
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-xl font-semibold mb-3 text-gray-600">⚙️ Paramètres</h2>
           <div className="space-y-3 text-gray-700">
+            <p><strong>Solde initial :</strong> Définissez votre solde de départ.</p>
             <p><strong>Sauvegarde :</strong> Exportez vos données pour les conserver.</p>
             <p><strong>PDF :</strong> Générez des rapports selon vos filtres.</p>
             <p><strong>Partage :</strong> Faites découvrir l'app à vos proches !</p>
@@ -1492,7 +1578,7 @@ const App = () => {
       <div className="pb-20">
         {currentPage === 'home' && <HomePage />}
         {currentPage === 'history' && <HistoryPage />}
-        {currentPage === 'assistant' && <AssistantPage />}
+        {currentPage === 'stats' && <StatsPage />}
         {currentPage === 'settings' && <SettingsPage />}
         {currentPage === 'tutorial' && <TutorialPage />}
         {currentPage === 'cgu' && <CGUPage />}
@@ -1523,13 +1609,13 @@ const App = () => {
             <span className={`text-xs mt-1 ${currentPage === 'history' ? 'text-black font-semibold' : 'text-gray-700'}`}>Historique</span>
           </button>
           <button
-            onClick={() => setCurrentPage('assistant')}
+            onClick={() => setCurrentPage('stats')}
             className={`flex flex-col items-center justify-center flex-1 h-full ${
-              currentPage === 'assistant' ? 'bg-gray-50' : ''
+              currentPage === 'stats' ? 'bg-gray-50' : ''
             }`}
           >
-            <MessageSquare size={24} className={currentPage === 'assistant' ? 'text-purple-600' : 'text-purple-500'} />
-            <span className={`text-xs mt-1 ${currentPage === 'assistant' ? 'text-black font-semibold' : 'text-gray-700'}`}>Assistant</span>
+            <TrendingUp size={24} className={currentPage === 'stats' ? 'text-purple-600' : 'text-purple-500'} />
+            <span className={`text-xs mt-1 ${currentPage === 'stats' ? 'text-black font-semibold' : 'text-gray-700'}`}>Stats</span>
           </button>
           <button
             onClick={() => setCurrentPage('tutorial')}
