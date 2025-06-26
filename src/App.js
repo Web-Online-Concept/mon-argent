@@ -217,10 +217,23 @@ const App = () => {
       const lowerText = text.toLowerCase();
       let type = 'debit'; // Par défaut
       
-      if (lowerText.includes('salaire') || lowerText.includes('virement') || 
-          lowerText.includes('remboursement') || lowerText.includes('crédit') ||
-          lowerText.includes('reçu') || lowerText.includes('gagné')) {
+      // Détection prioritaire si l'utilisateur dit explicitement "crédit" ou "débit"
+      if (lowerText.startsWith('crédit') || lowerText.includes(' crédit ')) {
         type = 'credit';
+      } else if (lowerText.startsWith('débit') || lowerText.includes(' débit ')) {
+        type = 'debit';
+      } else if (lowerText.includes('salaire') || lowerText.includes('virement') || 
+          lowerText.includes('remboursement') || lowerText.includes('reçu') || 
+          lowerText.includes('gagné')) {
+        type = 'credit';
+      }
+      
+      // Retirer "crédit" ou "débit" de la description si présent au début
+      let cleanDescription = description;
+      if (cleanDescription.toLowerCase().startsWith('crédit ')) {
+        cleanDescription = cleanDescription.substring(7);
+      } else if (cleanDescription.toLowerCase().startsWith('débit ')) {
+        cleanDescription = cleanDescription.substring(6);
       }
       
       // Détection automatique de la catégorie
@@ -237,14 +250,14 @@ const App = () => {
         detectedCategory = 'Logement';
       }
 
-      addTransaction(amount, description, detectedCategory, type);
+      addTransaction(amount, cleanDescription || 'Transaction vocale', detectedCategory, type);
       
       // Confirmation vocale
-      const utterance = new SpeechSynthesisUtterance(`Transaction enregistrée : ${type === 'credit' ? 'crédit' : 'débit'} de ${amount} euros pour ${description}`);
+      const utterance = new SpeechSynthesisUtterance(`Transaction enregistrée : ${type === 'credit' ? 'crédit' : 'débit'} de ${amount} euros pour ${cleanDescription}`);
       utterance.lang = 'fr-FR';
       window.speechSynthesis.speak(utterance);
     } else {
-      const utterance = new SpeechSynthesisUtterance("Je n'ai pas détecté de montant. Veuillez réessayer en disant par exemple : 50 euros courses");
+      const utterance = new SpeechSynthesisUtterance("Je n'ai pas détecté de montant. Veuillez réessayer en disant par exemple : Débit 50 euros courses");
       utterance.lang = 'fr-FR';
       window.speechSynthesis.speak(utterance);
     }
@@ -1346,12 +1359,18 @@ const App = () => {
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-xl font-semibold mb-3 text-blue-600">🏠 Page d'Accueil</h2>
           <div className="space-y-3 text-gray-700">
-            <p><strong>Transaction vocale :</strong> Appuyez sur le bouton vert et dites par exemple :</p>
+            <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-3">
+              <p className="font-semibold text-yellow-800 mb-1">💡 Astuce importante pour le vocal :</p>
+              <p className="text-sm">Commencez toujours par <strong>"Crédit"</strong> ou <strong>"Débit"</strong> pour une meilleure reconnaissance !</p>
+            </div>
+            <p><strong>Transaction vocale :</strong> Appuyez sur le bouton vert et dites :</p>
             <ul className="list-disc list-inside ml-4 space-y-1">
-              <li>"50 euros courses Carrefour" → Débit automatique</li>
-              <li>"Salaire 2000 euros" → Crédit automatique</li>
-              <li>"25 euros essence" → Débit automatique</li>
+              <li><span className="font-semibold text-green-600">"Crédit"</span> salaire 2000 euros</li>
+              <li><span className="font-semibold text-red-600">"Débit"</span> courses Carrefour 50 euros</li>
+              <li><span className="font-semibold text-red-600">"Débit"</span> essence 25 euros</li>
+              <li><span className="font-semibold text-green-600">"Crédit"</span> remboursement 100 euros</li>
             </ul>
+            <p className="mt-3 text-sm text-gray-600">💬 L'app détecte automatiquement le type, mais dire "Crédit" ou "Débit" en premier améliore la précision !</p>
             <p className="mt-3"><strong>Saisie manuelle :</strong> Remplissez les champs et validez.</p>
           </div>
         </div>
