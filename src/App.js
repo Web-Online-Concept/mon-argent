@@ -889,6 +889,17 @@ const App = () => {
                 <div className="space-y-4">
                   <div className="flex flex-col gap-3">
                     <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Type de transaction</label>
+                      <select
+                        defaultValue={transaction.type}
+                        className="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base bg-white"
+                        id={`type-${transaction.id}`}
+                      >
+                        <option value="debit">Débit (dépense)</option>
+                        <option value="credit">Crédit (revenu)</option>
+                      </select>
+                    </div>
+                    <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Montant (€)</label>
                       <input
                         type="text"
@@ -937,7 +948,8 @@ const App = () => {
                           const description = document.getElementById(`desc-${transaction.id}`).value;
                           const category = document.getElementById(`cat-${transaction.id}`).value;
                           const date = document.getElementById(`date-${transaction.id}`).value;
-                          updateTransaction(transaction.id, { amount, description, category, date: new Date(date).toISOString() });
+                          const type = document.getElementById(`type-${transaction.id}`).value;
+                          updateTransaction(transaction.id, { amount, description, category, type, date: new Date(date).toISOString() });
                         }}
                         className="flex-1 flex items-center justify-center gap-2 text-white bg-green-600 hover:bg-green-700 rounded-lg px-4 py-3 font-semibold text-base"
                       >
