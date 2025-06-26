@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Mic, MicOff, Download, Upload, MessageSquare, Home, History, X, Check, Trash2, Edit, Settings, FileText, HelpCircle } from 'lucide-react';
+import jsPDF from 'jspdf';
 
 // Composant formulaire manuel séparé pour éviter les problèmes de focus
 const ManualTransactionForm = ({ categories, addTransaction, manualType, setManualType }) => {
@@ -395,10 +396,7 @@ const App = () => {
   };
 
   // Export PDF
-  const exportPDF = async () => {
-    // Charger jsPDF seulement quand nécessaire
-    const { default: jsPDF } = await import('jspdf');
-    
+  const exportPDF = () => {
     const doc = new jsPDF();
     const filteredTransactions = getFilteredTransactions();
     
@@ -1111,7 +1109,7 @@ const App = () => {
             className="hidden"
           />
           <button
-            onClick={() => exportPDF()}
+            onClick={exportPDF}
             className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
           >
             <FileText size={20} />
