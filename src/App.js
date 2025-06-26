@@ -1446,7 +1446,7 @@ const App = () => {
         <h2 className="text-xl font-semibold mt-6">Données personnelles</h2>
         <p>Conformément à la loi « informatique et libertés » du 6 janvier 1978 modifiée et au Règlement Général sur la Protection des Données (RGPD), vous disposez d'un droit d'accès, de rectification, de suppression et d'opposition aux données personnelles vous concernant. Pour l'exercer, adressez votre demande par email à : web.online.concept@gmail.com</p>
 
-        <h2 className="text-xl font-semibold mt-6">Cookies</h2>
+        <h2 className="text-xl font-semibold mt-6">CCookies</h2>
         <p>Ce site utilise le localStorage pour fonctionner. Pour plus d'informations, consultez notre <button onClick={() => setCurrentPage('cookies')} className="text-blue-600 hover:underline">Politique des Cookies</button>.</p>
       </div>
     </div>
