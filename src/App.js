@@ -573,7 +573,7 @@ const App = () => {
               startRecording();
             }
           }}
-          className={`w-full max-w-md py-6 rounded-lg font-semibold text-xl flex items-center justify-center gap-3 transition-all transform mb-8 ${
+          className={`w-full max-w-md py-6 rounded-lg font-semibold text-xl flex items-center justify-center gap-3 transition-all transform mb-2 ${
             isRecording 
               ? 'bg-red-500 text-white scale-95' 
               : 'bg-green-500 text-white hover:bg-green-600 hover:scale-105'
@@ -582,6 +582,10 @@ const App = () => {
           {isRecording ? <MicOff size={28} /> : <Mic size={28} />}
           {isRecording ? 'Arrêter l\'enregistrement' : 'Ajouter une transaction vocale'}
         </button>
+        
+        <p className="text-xs text-gray-500 text-center mb-6 max-w-md">
+          💡 Commencez par "Crédit" ou "Débit" pour une meilleure reconnaissance
+        </p>
 
         {transcript && (
           <div className="w-full max-w-md mb-4">
